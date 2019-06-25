@@ -2,7 +2,7 @@
 
 ## 目次
 
-* なぜC言語を学ぶのか
+* [なぜC言語を学ぶのか](https://tmbrms.github.io/c-lang-world/1/why_do_you_learn_clang.html)
     * C言語が使われ続けるのはなぜか
     * 「ポインタがわからない」のはなぜか
     * C言語でプログラミングをするべきか
