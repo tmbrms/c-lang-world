@@ -1,0 +1,15 @@
+require 'fileutils'
+
+MDs = FileList["**/*.md"]
+HTMLs = MDs.ext('html')
+
+task :default => HTMLs
+
+rule '.html' => '.md' do |t|
+  sh "pandoc -t html5 -f markdown+east_asian_line_breaks -H main.css -o #{t.name} #{t.source}"
+end
+
+task :clean do
+  HTMLs.each{|f| FileUtils.rm(f) if File.exist?(f)}
+end
+  
