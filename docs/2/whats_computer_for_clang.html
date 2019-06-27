@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>whats_computer_for_clang</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <style type="text/css">
+  <!--
+  .body {
+    width: 600px;
+  }
+  -->
+  </style>
+</head>
+<body>
+<h1 id="c言語にとってコンピュータとは">C言語にとって、コンピュータとは</h1>
+<h2 id="rubyにとってコンピュータとは">Rubyにとって、コンピュータとは</h2>
+<blockquote>
+<p>「いよいよ世界の秘密について語られるんですね。クライマックスですね！」</p>
+</blockquote>
+<p>いや、冒頭だよ？それもアバンタイトルだ。 C言語じゃなくて、「普通の」オブジェクト指向言語であるRubyにとって世界はどうなっているかという話を、前置きとしよう。</p>
+<p>ん？どうして君が得意なJavaじゃないのかって？それは、私がRubyが好きだからというのが1番の理由だけど、主な理由は記述が簡潔だからだ。サンプルコードは簡潔な方がいいだろう？大丈夫。そんな難しいコードは見せないから。</p>
+<p>さて、Rubyはオブジェクト指向言語だ。それも、かなり純粋なオブジェクト指向言語だ。ここでいう純粋な、という意味は、世界を構成する要素がオブジェクトだけだということ。世の中のものは全部オブジェクトで出来ていて、これはオブジェクト、これはオブジェクトじゃない・・・と区別する必要がない。なので説明が簡単。良いことだよね。</p>
+<p>ここに1行のRubyのコードがある。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode ruby"><code class="sourceCode ruby"><a class="sourceLine" id="cb1-1" title="1">today = <span class="dt">Time</span>.now</a></code></pre></div>
+<p>何をしているかは想像がつくかな？</p>
+<blockquote>
+<p>「今日は今です、かな？」</p>
+</blockquote>
+<p>そのまま読むなよ。意味がわからないよ。 Rubyの用語で言えば、「Timeクラスのクラスメソッドnowの戻り値である Timeクラスのインスタンスを、変数todayに格納した」かな。</p>
+<blockquote>
+<p>「クラスメソッドは、Javaのstaticメソッドって事でいいんですよね？」</p>
+</blockquote>
+<p>そう。何の変哲も無い、普通のコードだよね？それで、このコードを見たとき、頭の中にはどんなイメージが浮かんでる？</p>
+<blockquote>
+<p>「コードを実行した時刻で止まった時計が、todayって名札を貼った箱の中に入ってます」</p>
+</blockquote>
+<p>なるほど。じゃあ、こうしたら？</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ruby"><code class="sourceCode ruby"><a class="sourceLine" id="cb2-1" title="1">clock1 = <span class="dt">Time</span>.now</a>
+<a class="sourceLine" id="cb2-2" title="2">clock2 = clock1</a></code></pre></div>
+<blockquote>
+<p>「2つの箱があって、それぞれに止まった時計が入ってます」</p>
+</blockquote>
+<p>うん、そうなりそうだけど、それは間違ったイメージだな。ホントに時計は2つあるの？</p>
+<blockquote>
+<p>「あ！そうです、違います。時計は1つです。 clock1とclock2は同じ時計を指してます。それを間違って、バグを作って怒られました」</p>
+</blockquote>
+<p>うん、そして怒ったのは私だ。よく覚えていたね。</p>
+<p>Javaだとプリミティブ以外のnewでインスタンスを作るようなもの、つまりオブジェクトはそのものが変数にはいっているんじゃない。変数に入っているのは参照、つまりオブジェクトを「指し示しているもの」だ。 Rubyでは、ほぼすべて(Fixnum以外)はオブジェクトだから、同じように変数にオブジェクトそのものが入っているイメージだと間違うんだ。つまり、変数ってのは箱じゃないんだな。</p>
+<p>こう考えてみよう。この世界は2つの異なる世界から出来ている。現実世界と、もうひとつは霊界でもアストラルサイドでもなんでもいいけど現実世界からは直接触れない世界だ。これをO界と呼ぶことにしよう。現実世界の方は、N界だ。君は、N界の住人だよ。</p>
+<p>N界の君が、<code>today = Time.now</code>と唱える。すると、O界にはその時刻を表すTimeオブジェクトが生まれる。そして、君の手は“today”と書かれたお札を握りしめている。</p>
+<p>君はそのお札を通してO界のTimeオブジェクトにメッセージを送ることができる。別のお札を用意して、それと“today”と繋がってるTimeオブジェクトとを新たに繋げることもできる。変数同士の代入って、そういうことだね。そして、Javaだとお札には種類があって、特定のタイプのオブジェクトとだけ繋げることが出来るけど、Rubyのお札は1種類だ。どんなオプジェクトとでも繋げることが出来る。これをプログラミングの用語で言えば、「静的型と動的型」だ。</p>
+<blockquote>
+<p>「え？えーっと、お札って変数のことだから、変数に種類があって、オブジェクトのタイプ・・・本当だ。typeってそのまま型を英語で言っただけじゃないですか！」</p>
+</blockquote>
+<p>そういうこと。じゃあ、お札を使って、オブジェクトにメッセージを送ってみよう。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ruby"><code class="sourceCode ruby"><a class="sourceLine" id="cb3-1" title="1">today = <span class="dt">Time</span>.now</a>
+<a class="sourceLine" id="cb3-2" title="2">str = today.to_s</a></code></pre></div>
+<p><code>to_s</code>はオブジェクトを文字列で表すメソッドだ。Timeは<code>to_s</code>メソッドを持ってる。つまり、“today”というお札を通じてO界のオブジェクトに<code>to_s</code>というメッセージを送った。オブジェクトはそれに答えて、新たに文字列、つまりStringオブジェクトを生み出す。君はそれを“str”という新しいお札に繋げたってワケだ。</p>
+<p>Rubyは動的型だからこういうことも出来る。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ruby"><code class="sourceCode ruby"><a class="sourceLine" id="cb4-1" title="1">today = <span class="dt">Time</span>.now</a>
+<a class="sourceLine" id="cb4-2" title="2">today = today.to_s</a></code></pre></div>
+<p>“today”に繋がったオブジェクトに<code>to_s</code>というメッセージを送り、その結果新たに作られたStringオブジェクトに“today”を繋ぎ直す。</p>
+<p>すると、以前“today”に繋がっていたTimeオブジェクトには、もう連絡をする手段は無くなる。N界とO界を繋いでるのは、お札だけだからね。</p>
+<blockquote>
+<p>「寂しんぼうのTimeオブジェクトはどうなっちゃうんですか？可哀想です！」</p>
+</blockquote>
+<p>どうなっちゃうのか、N界の住人は知ることができない。今でもあるのか、消えてしまったのか、わからないんだ。消えちゃうことがあるのかって？だって、消えないとO界はオブジェクトで溢れちゃうだろう。 N界に繋がっているオブジェクトが勝手に消えると困ってしまうけど、繋がってないオブジェクトは消えたって構わない。無駄を省く意味でも、消した方が良いだろうね。繋がっていないオブジェクトを探して、消す作業。それがガベッジコレクション、略してGCだ。</p>
+<blockquote>
+<p>「略してガベコレですよ。知ってます。ゴミ掃除です！」</p>
+</blockquote>
+<p>それそれ。これがRubyにとっての世界だ。</p>
+<p>N界、つまりNamespace(名前空間)があり、O界、つまりObjectがある。その2つをRubyが適切に管理してくれて、それらを使ってプログラマはやりたいことをやる。実際にコンピュータの中で CPUやメモリやハードディスクがどういう働きをしてそれらを実現しているかは、プログラマは知らなくても良い。コンピュータの能力が許す限り、いくらでもオブジェクトを作って構わない。これが、Rubyにとって、あるいはRubyプログラマにとっての世界のあり方だ。</p>
+<blockquote>
+<p>「すごいです。私、オブジェクト指向のオブジェクトがなんなのか、漠然としか理解できなくてもやもやしていたんです。でも、 O界にいるものがオブジェクトなんですね。わかりやすいです」</p>
+</blockquote>
+<p>そうだね。もっとも、Javaだと何がオブジェクト、つまりO界、Javaの言葉で言うとヒープにいるのかはそんなに単純じゃないけど、でも、この世界観に基づいてゆっくりJavaの教科書を読み直してみると頭の整理はされるかもね。教科書を書いている人はこのようなイメージを持って書いているはずだから。</p>
+<h2 id="コンピュータの底の底">コンピュータの底の底</h2>
+<p>さて、もうひとつの前置きをしよう。今度はCPUにとっての世界についてだ。直接、CPUに命令を出すプログラマにとっての世界と言ってもいい。機械に近いレベルを低レイヤー、抽象度が高い方を高レイヤーという言い方をするけど、これからの話は一番下のレイヤー。コンピュータの底の底のレベルだ。これより低いレイヤーに入ると、コンピュータの話なんだか、個々の部品の話なんだかわからなくなってしまう。</p>
+<blockquote>
+<p>「CPU？CPUはコンピュータの頭脳だって教わりましたけど、CPUにも世界があるんですか?」</p>
+</blockquote>
+<p>あるね。君が言うとおり、CPUはコンピュータで実際に計算を行うところだ。そして、CPUにとっての世界とはメモリ、ほとんどそれだけなんだ。</p>
+<p>CPUからはいろんな線が出てる。その一本一本に電気を流して、CPUはコンピュータのあちこちと合図をやりとりしてる。例えば、「今、キーボードが叩かれたよ！」とか「時間が来たよ！」とか。でも、物理的な線でやりとりしてる相手はとても限られている。そんな100本も200本も線で結んでるんじゃ、きりが無いからね。それ以外の外部からの情報は全部メモリを経由して手に入れるんだ。</p>
+<p>CPUの内部には、レジスタという小さいメモリ領域がある。 CPUがやっていることはメモリからそのレジスタにデータをコピーすること、レジスタのデータをメモリにコピーすること、そしてレジスターのデータを命令に従って書き換えること。例えば、レジスタAの値にレジスタBの値を足して書き換えるとか。基本的にはそんなものだ。</p>
+<p>そして、どんな計算を次にするかという命令自体も、メモリから読み込む。メモリ上に命令、つまりプログラムが書いてある。もちろん、ここでいう命令はCPUがそれぞれ独自に持っている命令だ。俗に機械語、Machine Languageなんて呼んだりする。</p>
+<p>どんなCPUにもそれぞれ「こんな命令をすることが出来ます」という取扱説明書がある。例えば、IntelのIA-32という種類のCPU、いわゆるPentiumなんて読んでた頃のCPUが持ってる命令の説明書は<a href="https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf">これ</a>だ。 IA-32が搭載されたパソコンを使っている人の99.99%はこの本の存在自体を知らないと思うけど、世の中にはコレを読み込んで、CPUに命令している人達がいっぱいいるんだ。</p>
+<p>さて、話を戻すよ。 CPUに対する命令は、メモリの上に専用の書き方で書いてある。そして、メモリのどこから命令を読むかもCPUはレジスタの値として持っている。それを使って指示通りに命令を1つずつ読んでいくんだ。ループ処理のように最後まで処理をしたら最初に戻るという場合、この「次に実行するプログラムが書いてある場所が書いてあるレジスタ」を書き換えて、処理をループの先頭に戻す。そうやってCPUに繰り返し処理をさせるんだね。</p>
+<p>さて、CPUはメモリのどこかから次に実行する命令を取り出して、またどこかから処理する対象のデータを取り出して・・・と日がな一日やっているワケだけども、どこかというのはどうやって指定してるんだろう。</p>
+<blockquote>
+<p>「さあ・・・メモリに番号でも振ってあるんですかね？」</p>
+</blockquote>
+<p>おっとびっくり、大正解だ。メモリには端っこから順番に番号が振ってある。</p>
+<p>メモリというのは言ってみればONとOFFをバチバチ切り替えられるスイッチみたいなもので、それがもの凄い数並んでる。そして、そのスイッチには0から順番に番号が振ってあって、 1つ1つ、明確に指定できる。番号を指定すればそのスイッチがONかOFFかは見ればわかるし、自由にONとOFFを切り替えることもできる。</p>
+<p>さて、この番号だけど、何桁ぐらいあれば足りるだろうか？君の今使ってるパソコンのメモリはいくつだい？</p>
+<blockquote>
+<p>「聞いて下さいよ。4GBしかないんですよ。8GBは基本的人権って聞きました。人権侵害ですよ。UNHRCに訴えようか」</p>
+</blockquote>
+<p>なんだい、UNHRCって？国連人権理事会？妙なことはよく知っているなあ。それで、4GBのメモリ全部に番号を振るには何桁あればいいの？</p>
+<blockquote>
+<p>「4GBはだいたい4000MB、4000MBは4,000,000KB、つまり、4,000,000,000バイトだからひい、ふう、みい・・・10桁？」</p>
+</blockquote>
+<p>どうして10進数？コンピュータなんだから数字は2進数で扱うでしょ。</p>
+<blockquote>
+<p>「あ、そか。えーっと、2の10乗が1024、つまり約1000だから、4 × 2^10 × 2^10 × 2^10 なので 4 × 2^30です！」</p>
+</blockquote>
+<p>4は2の何乗？</p>
+<blockquote>
+<p>「しまった！2の32乗です。32桁ですね」</p>
+</blockquote>
+<p>つまり、32bitあれば4GBのメモリすべてに番号が付けられるわけだ。</p>
+<p>32bit CPUとか64bit CPUとかいう言葉を聞いたことあるよね。 32bit CPUって何が32bitなんだと思う？「CPUが自然に使える数字の桁数が32bit」なんて表現をするけど、 CPUにとってメモリを読むのはもの凄く自然なことだから、 32bit CPUというと、メモリに付けている番号が32bitなのが普通だ。</p>
+<p>だから、32bit CPUだとどんなにメモリを積んでも4GBまでしか使えないんだ。それ以上の場所を読みたくても、番号が指定できないからね。</p>
+<blockquote>
+<p>「しょぼーん・・・。私のPCが32bit CPUだともうメモリは増やせないんですね・・・」</p>
+</blockquote>
+<p>いや、2019年に32bit CPUのパソコンを使ってるってことはないと思うよ。存分に会社と人権問題について語ってみるといい。うまくいくといいね。</p>
+<p>さて、このメモリについている番号のことをメモリのアドレスと呼ぶ。日本語だと番地って呼ぶ人も多いね。メモリの何番地、みたいな感じで。</p>
+<p>ここまででCPUの世界のお話は一段落だ。 CPUは、自分が何かするための情報はほぼすべてメモリから手に入れる。メモリからデータ取り出すために、メモリの場所を数字で指定する。その数字をアドレスと呼ぶということがわかればOKだ。</p>
+<h2 id="ちょうど良く低レベル">ちょうど良く低レベル</h2>
+<blockquote>
+<p>「そういえば、C言語はどこに行ったんでしたっけ？」</p>
+</blockquote>
+<p>それに気がついちゃったかい・・・。いや、これからがまさにC言語の話だ。 C言語誕生の瞬間について話そう。</p>
+<p>昔々。1970年代初めの話だ。君はもちろん生まれてないし、私も生まれてない。その頃に生まれたのが、あのUnixだ。</p>
+<blockquote>
+<p>「Unixって何ですか？UbuntuとかRedHatみたいなLinuxの一種ですか？」</p>
+</blockquote>
+<p>逆だ。LinuxがUnixの一種だよ。フィンランドの学生だったLinus Torvaldsさんが Linuxを作るのは90年代の話だ。Unix誕生当時Linusはもう生まれてるけど幼稚園児だね。フィンランドの幼稚園がどんなものかは知らないけども、 Unix誕生当時、Linusがまだコンピュータを触ってなかったのは確実だと思うね。</p>
+<p>まあ、それぐらい昔の話で、その当時のコンピュータは今のものとは大分違うし、個人で勝手に使えるようなものじゃなかったんだ。みんなで共同で使うものだったんだね。</p>
+<p>ところが、Unixを作った人達はひょんなことから2つの大切なものを手に入れた。 1つはPDP-7という好き勝手にいじっていいコンピュータだ。もっとも、勝手に使っていいぞとうち捨てられていたぐらいだから当時としても大した性能じゃなかったらしい。</p>
+<p>もうひとつは時間だ。当時、彼らがやっていたプロジェクトが頓挫した。その頓挫したプロジェクトもOSの開発プロジェクトで、OSの名前はMulticsという。当時としてはかなり先進的で大規模なプロジェクトで、大規模なプロジェクトというのは頓挫しがちだというのは、今も昔も変わらない。それでヒマになっちゃったらしい。</p>
+<blockquote>
+<p>「痛いほどよくわかります。こないだまでいたプロジェクトなんてですね・・・」</p>
+</blockquote>
+<p>待て待て。その話は今度、居酒屋で聞いてやる。先に進めるぞ。</p>
+<p>そんなわけで、ヒマなOSづくりの専門家たちに勝手に使っていいコンピュータを与えたので、彼らはそこで動くOSを作ってしまった。それが最初のUnixだ。もちろん使っているコンピュータがショボいのでMulticsほど凄い機能は入れられない。それでMultiに対して、Uniと名付けたんだそうだ。しかし、すぐ形になってちゃんと動いたので同僚のウケは良かったらしい。</p>
+<p>そこで、チームはいろいろ画策してもうちょっと良いコンピュータのPDP-11を手に入れた。 PDP-7用のUnixはもちろんPDP-7専用の機械語で作られていたので、それをPDP-11用にしなくちゃいけない。そこでチームは、Unixを機械に依らないコンピュータ言語で書き直すことにした。</p>
+<p>オペレーションシステムは、まさにコンピュータを機械として扱うソフトウェアだ。しかし、当時はコンピュータを機械として扱うなら機械語でプログラムし、それを使って計算をするならFORTRANのような計算用の言語でプログラムするのが当たり前だった。コンピュータを機械のように扱って、かつ、それがコンピュータならどんな機械でも動くというような都合のいいプログラミング言語はなかったんだ。</p>
+<p>そこで、Unixを作った人達はまさにOSを移植するための言語としてC言語を作り、 UnixをC言語で書き直したんだ。必要は発明の母。その後、50年以上にわたって使われ続ける C言語が誕生した瞬間だ。ついでにいえば、Unixも同じく今でも山ほど使われている。凄い人達もいたものだ。</p>
+<blockquote>
+<p>「へぇ〜。そう考えてみると、案外昔から使われているものって多いんですね」</p>
+</blockquote>
+<p>そうだね。コンピュータの世界は日進月歩、ドッグイヤーなんて言われて変化の激しい世界だ。それは間違いない。その一方で、プログラミング言語の進歩というのはそれほど速くはない。プログラミング言語というのはコンピュータと人間が意思のやりとりをするためのものだけど、コンピュータはともかく人間はそんなにどんどん変わるわけじゃない。新しいプログラミング言語はどんどん出てくるけど、人間がそれを覚えて使いこなすには時間がかかるものだからね。</p>
+<p>さて、C言語がどういう動機で作られたかをここまでで見てきた。では、機械に依存しないけど機械としてのコンピュータを扱うプログラミング言語というのは、どういうものだろう。</p>
+<p>説明したとおり、コンピュータはCPUとメモリで出来ている。 CPUはコンピュータの機種によってバラバラだ。当然、機械語もバラバラだ。だけど、大まかな機能は変わらない。</p>
+<p>メモリ上の2カ所に書いてある値を足して、別なところに書いて欲しいとする。その場合、当然、CPUに「メモリをレジスタに書け」「レジスタの値を足せ」「レジスタの値をメモリに書け」という命令を全部書く必要がある。 CPUごとに命令も違えば、どんなレジスタを持っているかも違う。でも、大まかに言えば足し算をする機能は、どんなCPUにもある。「足し算をしろ」というコードを書けばCPUがどんなことをするのかは気にしなくて良いように、CPUごとの命令に書き換えてくれるプログラムがあれば便利だ。このプログラムの事をコンパイラという。聞いたことはあるんじゃないかな。</p>
+<p>一方、メモリの方はどんなコンピュータもあまり変わらない。とにかくたくさんのスイッチが並んでいて、一つ一つにアドレスが付いている。 1970年のメモリもそういうものだったし、2020年のメモリもそういうものだ。大きさが何万倍になったのかよくわからないけど、仕組みはほとんど変わらない。なので、メモリはそのまま扱うことにした。つまり、アドレスを指定したら、コンピュータが持っているメモリのどこにでもアクセスできるような仕組みのままにした。</p>
+<p>これがC言語の見ている世界だ。</p>
+<p>オブジェクト指向言語で「オブジェクト」といえば O界に浮かぶ架空の存在だった。O界がコンピュータのなかでどういう電気信号により実現している世界なのか、ちょっとすぐにはイメージできないと思うし、する必要もない。しかし、C言語で「オブジェクト」といえば、メモリ上にあるデータそのものだ。場所もはっきりわかっている。電子顕微鏡じゃないと見えないかも知れないが、物理的にどこかはっきりと言える。どれだけの数、どういう順番で0と1が並んでいるのかはっきりと決まっている。そこに曖昧さはない。</p>
+<p>字面だけ見るとC言語とJava言語のコードはそんなに変わらないように見えるかも知れない。 Javaの文法がCおよびCを元にして作られたC++言語に慣れた人に親しみやすいように決められたのだから、当然だ。しかし、プログラマが頭に思い浮かべている、プログラムが動いているときのイメージはまったく違う。 C言語のそれは、むしろ機械語のプログラミングの方に近いと言えるだろう。</p>
+<blockquote>
+<p>「面白いです！Cのプログラマの頭の中って、たくさんのスイッチが並んでるんですね。今、私の中には明和電気のコイビートって楽器の巨大なバージョンみたいなのが浮かんでます」</p>
+</blockquote>
+<p>コイビート？・・・なんじゃこりゃ。うーん、でもあながち違ってもないかな(笑)</p>
+<figure>
+<img src="https://www.maywadenki.com/cms/wp-content/uploads/NAKI-CX_Koi-beat_RGB-900x491.jpg" alt="コイビート" /><figcaption>コイビート</figcaption>
+</figure>
+</body>
+</html>
