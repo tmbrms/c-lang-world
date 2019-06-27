@@ -6,7 +6,7 @@
     * C言語が使われ続けるのはなぜか
     * 「ポインタがわからない」のはなぜか
     * C言語でプログラミングをするべきか
-* [C言語にとって、コンピュータとは](file:///Users/tambara/ITLMC/c-lang-world/docs/2/whats_computer_for_clang.html)
+* [C言語にとって、コンピュータとは](https://tmbrms.github.io/c-lang-world/docs/2/whats_computer_for_clang.html)
     * Ruby(高級言語)にとって、コンピュータとは
     * コンピュータの底の底
     * ちょうど良く低レベル
