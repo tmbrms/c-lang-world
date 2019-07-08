@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>variable_has_its_type_data_has_no</title>
+  <style>
+      .wrapper{
+        display: grid;
+        grid-template-columns: 1fr 1000px 1fr;
+      }
+      .toc{
+        background-color: darkcyan;
+      }
+      .note{
+        background-color: darkcyan;
+      }
+      .main{
+        padding: 20px;
+      }
+      blockquote{
+        background-color: lightblue;
+        font-size: large;
+        margin: 0px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="wrapper">
+<div class="toc">
+
+</div>
+<div class="main">
+<h1 id="変数は型ありデータは型なし">変数は型あり。データは型なし。</h1>
+<h2 id="表の顔と裏のバイト列">表の顔と裏のバイト列</h2>
+<blockquote>
+<p>「でも、0と1の羅列ってイメージが難しいですね」</p>
+</blockquote>
+<p>そうだね。だから、Cプログラマは実際には数字をまとめて扱う。 Cプログラマの頭の中には0と1があるのではなく、方眼紙のひとマスひとマスに、0から255までの数字がはいっているところがイメージされている。0から255まで数字は8ビット、つまり0か1の8桁で表される。0から255の数字は16進数で書けば2桁だから、こんな感じだ</p>
+<figure>
+<img src="./memory_map.png" alt="メモリのイメージ" /><figcaption>メモリのイメージ</figcaption>
+</figure>
+<p>実際には0101010と0と1が並んでいるんだけども、それを人間の方で勝手に8つずつに区切っているわけだ。まあ慣れたプログラマなら16進数を2進数に直すのはすぐだし。全部覚えちゃってるからね。</p>
+<blockquote>
+<p>「え！？256種類全部覚えているんですか？」</p>
+</blockquote>
+<p>いや、覚えるのは16こでいいじゃない。出てくる文字は0からfまでの16個なんだから。</p>
+<blockquote>
+<p>「あ、そうか。それでも覚えるのは大変じゃないですか？」</p>
+</blockquote>
+<p>別に覚えなくてもいいよ。すぐに求められるんだから。例えば、b(2進数の11)だったら8 * 1 + 4 * 0 + 2 * 1 + 1 * 1 = 1011はすぐに求められるだろう？だったら0x6bが01101011なのもすぐわかるだろう。逆にこれが10進数でいくつかと聞かれると6 * 16 + 11 は暗算が難しいよね。なので、10進数はメモリを表現するのにはあんまり使わない。</p>
+<p>そして、実はC言語もこの8ビットの単位ごとの箱に番号をつけて、それをアドレスとして使う。というのも、メモリは1ビットずつ読むわけではなくて、ある程度まとめて読むからだ。ご想像の通り、32bit CPUは32ビットずつ読む。で、8ビットより細かい単位で読むマシンの事は考えなくてもよかろうと C言語を作った時点でなったんだろうね。あまりよく知らないけど。</p>
+<p>というわけで、この8ビット単位の箱に番号つまりアドレスを扱うんだ。</p>
+<p>では、実際にメモリのアドレスを見てみよう。次のプログラムをコンパイルして、実行してみよう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv){</a>
+<a class="sourceLine" id="cb1-4" title="4">  <span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a>
+<a class="sourceLine" id="cb1-5" title="5">  </a>
+<a class="sourceLine" id="cb1-6" title="6">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</a>
+<a class="sourceLine" id="cb1-7" title="7">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
+<a class="sourceLine" id="cb1-8" title="8">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a>
+<a class="sourceLine" id="cb1-9" title="9"></a>
+<a class="sourceLine" id="cb1-10" title="10">  str = str + <span class="dv">4</span>;</a>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
+<a class="sourceLine" id="cb1-13" title="13">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a>
+<a class="sourceLine" id="cb1-14" title="14">}</a></code></pre></div>
+<p>実行結果はこんな感じだ</p>
+<pre><code>ADDRESS: 0x7ffeea072a58
+ADDRESS: 0x105b8df92
+VALUE: 74
+ADDRESS: 0x105b8df96
+VALUE: 6b</code></pre>
+<blockquote>
+<p>「うわっ！なんじゃこりゃ！」</p>
+</blockquote>
+<p>なんのことかさっぱりわからないと思うけど、 C言語でやれることの雰囲気が味わえれば良いから。</p>
+<p>先に、メモリマップを出しておこうか。このプログラムを実行すると、メモリの内容はこんな感じになっている。</p>
+<figure>
+<img src="./address.png" alt="メモリマップ" /><figcaption>メモリマップ</figcaption>
+</figure>
+<p>メモリの2カ所のアドレスが表示されてる。 1つは0x105b8df92付近。もうひとつは0x7ffeea072a58付近。両者はかなり桁が違うので、メモリ上のかなり離れた位置にあると言うことがわかる。</p>
+<blockquote>
+<p>「このアドレスの値は、たまたまこの値なだけで私のPCで実行したら変わっちゃうんですよね？」</p>
+</blockquote>
+<p>その通り。というか、何度も実行したらそのたびに違うかも知れない。そういうものだ。</p>
+<p>さて、順番に見ていこうか。</p>
+<p>まず、C言語特有の演算子から行こう。いきなりポインタの話だ。</p>
+<p>2つの演算子が登場する。1つは<code>&amp;</code>。もうひとつは<code>*</code>だ。 <code>&amp;</code>を「アドレス演算子」、<code>*</code>を「間接演算子」と呼ぶよ。</p>
+<p><code>&amp;</code>を変数に付けると、その変数のメモリ上の位置、つまりアドレスが取得できる。<code>*</code>はその逆演算だ。変数に<code>*</code>を付けるとその変数の値をアドレスだとみて、そのアドレスが指す位置に格納されているデータを取り出す。これは実例を見ればさほどややこしくはないと思う。</p>
+<p>もうひとつ、アドレスを格納する変数を宣言するときにも<code>*</code>を使う。こっちがなかなかややこしい。さっきのコードの最初の部分を見てみよう。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a></code></pre></div>
+<p>これは何をやっているのかというと、「char型のポインタstrを宣言して、そこに文字列のアドレスを格納している」という言い方になる。いよいよポインタという言葉がでてきたね。つまり、ポインタとは「アドレスを格納するため変数」だ。</p>
+<p>では、char型のポインタとはどういう意味だろう。</p>
+<p>char型というのは、(英数字)1文字を格納するための整数型だ。英語圏の人はたかだかアルファベットと数字といくつかの記号しか文字が必要じゃなかったので、1文字を8ビットの整数で表すことにした。日本語のことなんか、これっぽっちも考えてなかった時代に作られてるからね。</p>
+<p>char型の変数に<code>&amp;</code>をつけると、アドレスが得られる。私のPCは64bitなので、実体は8バイトの整数だ。同じように、int型の変数に<code>&amp;</code>をつけても、同じように8バイトの整数としてアドレスが得られる。</p>
+<p>そのアドレスに対して<code>*</code>を適用して、元の値を取り出すときにもともとchar型だったのか、int型だったのかわからないと困ってしまう。 charなら8バイトの箱1つ読めばいいが、intなら32ビットだから4つ読まないといけない。だから、ポインタはもともとどんな型のデータのアドレスだったかを維持しておく必要がある。だから、「char型のポインタ」というものが必要になるんだ。</p>
+<p>そして、宣言の書き方なんだけど、<code>char *str</code>と書いて、「strは<code>*</code>を付けるとcharになる変数」という意味になる。つまり、<code>str</code>はchar型のポインタということだ。けして、「<code>*str</code>」という変数を宣言しようとしているわけではない。回りくどいね。</p>
+<p>さらにややこしいことに、<code>char* str</code>と書くことも出来る。これだと<code>char*</code>で「char型のポインタ」という型の様に見えるので、こっちを好む人も多い。実は<code>char * str</code>でもエラーにならないんだけど、これだと掛け算みたいで訳がわからないので、こう書く人は見たことがない。</p>
+<blockquote>
+<p>「え、どっちでもいいんですか？」</p>
+</blockquote>
+<p>最初に書いた<code>char *str</code>の書き方をオススメしておくよ。ただ、<code>char* str</code>と書くのも多く見かけるので、驚かないように。</p>
+<p>さて、</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" title="1"><span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a></code></pre></div>
+<p>と書かれた1行に対して、C言語は何を行うのか見ていこう。</p>
+<p>まず、メモリ内に“thanks”という文字列に当たるバイト列を書き込む。代入の右側に文字列リテラルを書くと、その文字列を書き込んだメモリのアドレスが代入の左側に渡る。</p>
+<p>次に、そのアドレスを格納するための変数strのためにメモリを確保する。アドレスは8バイトだからメモリのどこかに 8バイトの空きを見つけて、そこを「ここはstrが使うからね」とメモっておく。そして、そこに“thanks”が書かれた場所のアドレスを保存する。</p>
+<p>これで、さっき見せたメモリの状態になるんだ。 1行で結構いろいろとやったもんだ。</p>
+<p>プログラムの次の部分を見ていこう。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" title="1">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</a>
+<a class="sourceLine" id="cb5-2" title="2">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
+<a class="sourceLine" id="cb5-3" title="3">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a></code></pre></div>
+<p>printfは、変数をいろんなフォーマットで表示する関数で、 C言語の一番最初のページに書いてあるような関数だけど、実はものすごく奥が深い関数だ。ま、おいおい知ってくれたらいい。</p>
+<p>%pを指定すると、2つ目の引数をポインタだと解釈して、 16進数表示してくれる。最初は&amp;str、つまり“thanks”のアドレスを保存しているポインタのアドレスを表示している。そして、次にstr、つまり“thanks”のアドレスを表示している。 3行目は、*str、つまり“thanks”が記録されている場所に入っている中身、つまり文字そのものを表示しようとしている。こんどはポインタじゃないので、%xで16進数で表示させている。結果は0x74、10進数でいえば116。文字tの文字コードが0x74だ。</p>
+<p>これで演算子の<code>&amp;</code>と<code>*</code>の使い方はわかったかな。</p>
+<blockquote>
+<p>「わかったかと言われると微妙ですけど、アドレスをメモリに書いて、それを使って辿っていく・・・というやり方のイメージは持てました」</p>
+</blockquote>
+<p>うん。それでいい。つまり、C言語ではメモリの位置をリアルな数字として変数に保存してしまうんだ。そして、さらにその数字を書き換えてしまうことも出来る。</p>
+<blockquote>
+<p>「えっ？どこを指してるかわからなくなっちゃいますよ」</p>
+</blockquote>
+<p>そうだ。すごく気をつけて書き換える必要はあるけど、出来ちゃうんだな。プログラムを先に進んでみよう。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb6-1" title="1">  str = str + <span class="dv">4</span>;</a></code></pre></div>
+<blockquote>
+<p>「あー、ホントだ。数字足しちゃってる。えええ・・・。これ別に好きな数字足しちゃってもいいんですか？」</p>
+</blockquote>
+<p>別にいいよ。ただ、その結果のアドレスが指している先のメモリが何に使われているのか、はたまた何にも使われていないのかはさっぱりわからないから意味はない。けど、 足そうが引こうがプログラムとしてはエラーにならない。ここでは4を足している。するとどうなるか。その下で確認をしているね。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" title="1">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
+<a class="sourceLine" id="cb7-2" title="2">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a></code></pre></div>
+<p>strの中身が+4されている。そして、その数字をアドレスとしてメモリを参照する、つまり<code>*str</code>してその値を表示すると0x6bになっている。</p>
+<blockquote>
+<p>「足したのに減っちゃいました」</p>
+</blockquote>
+<p>何を言っているんだよ。4つ右隣のメモリを見たら0x6b、つまり、 kの文字コードが入っているというわけだ。 “thanks”のtから見て、4つ隣はkだろう？</p>
+<blockquote>
+<p>「おー、そういうことか。つまり“thanks”という文字列は、メモリ上に隙間無く順番に書き込まれていたってことですね」</p>
+</blockquote>
+<p>そういうことだ。ただし、ポインタに対する演算は単にアドレスに数字を足すこととはちょっと違う。ちょっと違うけど、今は似たようなものだと思っていてもいい。</p>
+<p>ともかく、まずはC言語で何かデータを扱う時にはそれがメモリ上に書き込まれているし、そのアドレスも取り出すことが出来るということが実感できればいい。</p>
+<p>さらに、アドレスは所詮ただの数字なので好きな数字を指定すれば、メモリ上のどこでも参照することが出来るということもわかったかな。これは他のプログラミング言語の体験とはまるっきり違うんじゃないか？</p>
+<blockquote>
+<p>「そうですね。もの凄く具体的です。64ビットの整数は値が大きすぎてイメージ出来ませんが、数字は数字ですもんね」</p>
+</blockquote>
+<p>そうだ。</p>
+<p>もっとも、私がコンピューターを触りはじめた90年代前半は、 CPUこそ32bitが当たり前になっていたが、OSは16bitのものが多かった。せっかくの32bit CPUを互換機能を使って「速い16bit CPU」として使っている状態だったんだ。だから、使えるメモリは64KBしか無かった。</p>
+<blockquote>
+<p>「すくなっ！」</p>
+</blockquote>
+<p>これだと、根性があればメモリを端から端までプリントアウトして眺めることも不可能じゃない。昔のプログラマにとって、メモリのアドレスとそのアドレスに書き込まれている値というは、普通に手に取って把握できるものだったんだ。アドレスも16進で書いてたった4桁だしね。</p>
+<h2 id="データ変換とキャスト">データ変換とキャスト</h2>
+<h2 id="共用体">共用体</h2>
+</div>
+<div class="note">
+</div>
+</div>
+</body>
+</html>
