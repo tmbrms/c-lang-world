@@ -6,7 +6,7 @@ HTMLs = MDs.ext('html')
 task :default => HTMLs
 
 rule '.html' => '.md' do |t|
-  sh "pandoc -t html5 -f markdown+east_asian_line_breaks -H main.css -o #{t.name} #{t.source}"
+  sh "pandoc -t html5 -f markdown+east_asian_line_breaks --template=default.html -o #{t.name} #{t.source}"
 end
 
 task :clean do

@@ -6,6 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>why_do_you_learn_clang</title>
   <style>
+      .wrapper{
+        display: grid;
+        grid-template-columns: 1fr 1000px 1fr;
+      }
+      .toc{
+        background-color: darkcyan;
+      }
+      .note{
+        background-color: darkcyan;
+      }
+      .main{
+        padding: 20px;
+      }
+      blockquote{
+        background-color: lightblue;
+        font-size: large;
+        margin: 0px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
@@ -77,15 +97,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <style type="text/css">
-  <!--
-  .body {
-    width: 600px;
-  }
-  -->
-  </style>
 </head>
 <body>
+<div class="wrapper">
+<div class="toc">
+
+</div>
+<div class="main">
 <h1 id="なぜc言語を学ぶのか">なぜC言語を学ぶのか</h1>
 <h2 id="c言語が使われ続けるのはなぜか">C言語が使われ続けるのはなぜか</h2>
 <blockquote>
@@ -96,10 +114,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>ただ、C言語はプログラマにとって特別なポジションを占めているプログラミング言語であることは確かでさ、代わりになる言語がほとんど無いんだよ。コンピュータに事務処理をさせたり、コンピュータで遠くの人とコミュニケーションしたり、コンピュータに計算をさせたりするのではなく、コンピュータという機械そのものを操作したいときに C言語は一番力を発揮する。だから、デバイスドライバやオペレーティングシステム、プログラミング言語処理系など、私たちプログラマがコンピュータを使うための下支えをしてくれるようなプログラムを書くには、 C言語はもってこいさ。</p>
 <p>それはLinus TorvaldsさんがC言語でLinuxを作ったり、 Matz(まつもとゆきひろ)さんがC言語でRubyを作ったことでもわかるよね。 C言語を自在に操れない奴を誰も凄腕のハッカーとは認めないし、逆に機械としてのコンピュータを理解していないとC言語はよくわからない。そうだね、C言語が出来なくてもプロのプログラマを名乗るのになんの問題もないけども、C言語が出来ないとハッカーにはなれないかな。</p>
 <blockquote>
-<p>「ハッカーって悪い人ですよね？ハッカーになったら神奈川県警が来ちゃいますよ？」</p>
+<p>「ハッカーって悪い人ですよね？ハッカーになったらケーサツが来ちゃいますよ？」</p>
 </blockquote>
 <p>また定番のFAQを・・・。ハッカーという言葉にもともと悪い意味は無かったそうだよ。この業界にはハッカーという言葉を犯罪者という意味で使うと、気分を害する人が多く居るから気をつけて。</p>
-<p>それにハッカーじゃなくても神奈川県警は来るらしいしね。</p>
+<p>それにハッカーじゃなくてもケーサツは来るらしいしね。</p>
 <h2 id="ポインタがわからないのはなぜか">「ポインタ」がわからないのはなぜか</h2>
 <blockquote>
 <p>「カッコイイからC言語を勉強しようとしたら、みんながポインタが難しいぞーって言ってくるんです。難しいのはイヤなので、ポインタ抜きで教えて下さい！」</p>
@@ -133,5 +151,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>でも、「この信号で引っかかったら、のろのろ進むとどんどんタイミング悪く信号にひっかかり続けるんだよな。2つ目の信号までトばして赤になるぎりぎり前に通過してしまえば、あとはタイミング良く進めるんだけど」というようなことにはRubyでは対応できない。だから、C言語は速くて効率的なプログラムを作ることができるんだ。もちろん、運転手の腕は必要だけど。</p>
 <p>じゃあ、「運転する人が理解しておくべき機械としての自動車」にあたる「プログラミングする人が理解しておくべき機械としてのコンピュータ」ってどういうものだろう。これは、C言語のプログラマにとっては共通の概念なんだけど、 C言語を触ったことがないプログラマはあんがい知らないものなんだ。そして、この共通の概念、いわばC言語がモデル化したコンピュータというものがコンピュータを理解する上で非常に扱いやすく便利だったことが C言語がプログラマにとって特別なポジションにいることの理由なんだよ。</p>
 <p>おっ？興味出てきた？じゃあ、ちょっと説明してみようか。コンピュータを深く知るためのC言語講座。勉強しても決してC言語でプログラムを書けるようにはならないけど、 C言語を通して見た世界の姿についてわかるようになるためのお話だ。</p>
+</div>
+<div class="note">
+</div>
+</div>
 </body>
 </html>
