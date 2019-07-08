@@ -10,7 +10,7 @@
     * Ruby(高級言語)にとって、コンピュータとは
     * コンピュータの底の底
     * ちょうど良く低レベル
-* [変数は型あり。データは型なし。](https://tmbrms.github.io/c-lang-world/2/variable_has_its_type_data_has_no.html)
+* [変数は型あり。データは型なし。](https://tmbrms.github.io/c-lang-world/3/variable_has_its_type_data_has_no.html)
     * 表の顔と裏のバイト列
     * データ変換とキャスト
     * 共用体
