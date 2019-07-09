@@ -174,7 +174,7 @@ CPUがやっていることはメモリからそのレジスタにデータを�
 俗に機械語、Machine Languageなんて呼んだりする。
 
 どんなCPUにもそれぞれ「こんな命令をすることが出来ます」という取扱説明書がある。
-例えば、IntelのIA-32という種類のCPU、いわゆるPentiumなんて読んでた頃のCPUが
+例えば、IntelのIA-32という種類のCPU、いわゆるPentiumなんて呼んでた頃のCPUが
 持ってる命令の説明書は[これ](https://www.intel.co.jp/content/dam/www/public/ijkk/jp/ja/documents/developer/IA32_Arh_Dev_Man_Vol2A_i.pdf)だ。
 IA-32が搭載されたパソコンを使っている人の99.99%はこの本の存在自体を知らないと思うけど、
 世の中にはコレを読み込んで、CPUに命令している人達がいっぱいいるんだ。
