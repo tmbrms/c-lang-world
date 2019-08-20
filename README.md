@@ -14,7 +14,7 @@
     * 表の顔と裏のバイト列
     * データ変換とキャスト
     * 共用体
-* この広いアドレス空間いっぱい
+* [この広いアドレス空間いっぱい](https://tmbrms.github.io/c-lang-world/4/how_wide_the_address_space_is.html)
     * 32bitポインタ
     * インテルi386プロテクトモード
     * Segmentation Fault

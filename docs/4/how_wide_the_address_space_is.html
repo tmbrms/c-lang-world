@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>how_wide_the_address_space_is</title>
+  <style>
+      .wrapper{
+        display: grid;
+        grid-template-columns: 1fr 1000px 1fr;
+      }
+      .toc{
+        background-color: darkcyan;
+      }
+      .note{
+        background-color: darkcyan;
+      }
+      .main{
+        padding: 20px;
+      }
+      blockquote{
+        background-color: lightblue;
+        font-size: large;
+        margin: 0px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+
+    td,
+    th {
+      padding: 10px;
+    }
+
+    th {
+      color: #fff;
+      background: #005ab3;
+    }
+
+    table tr:nth-child(odd) {
+      background: #e6f2ff;
+    }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="wrapper">
+<div class="toc">
+
+</div>
+<div class="main">
+<h1 id="この広いアドレス空間いっぱい">この広いアドレス空間いっぱい</h1>
+<h2 id="bitポインタ">32bitポインタ</h2>
+<p>今ではすっかりPCは64bitになったけど、 1995年にWindows95の登場したときが、世の中に32bitのCPUと32bitのOSが普及したタイミングだった。前も説明した通り、それまでの16bitのアドレスではメモリ64KBしか 1度に扱うことが出来ない。これは少し大きなデータ、例えばちょっとしたグラフィックなどを扱う上でも不便極まりない。</p>
+<p>例えば、32×32の大きさのグラフィック、例えばアイコンのデータってどのぐらいになる？</p>
+<blockquote>
+<p>「えーっと、32×32だから、ピクセル数は2<sup>5×2</sup>5=2<sup>10。 1ピクセルに16色使うとするとピクセルごとに2</sup>4必要だから、 2^14です」</p>
+</blockquote>
+<p>うん。いわゆるウェブブラウザのタブにくっついてるアイコン、あれをfaviconっていうけど、あのアイコンの大きさがそのぐらい。 16bitだと、アレが4つでいっぱいになっちゃう量のメモリしか 1つのポインタでは使えないってことだ。</p>
+<p>しかし、32bitあれば4GBのメモリを扱える。これだけのメモリを扱えれば、プログラムを書く上であまり困る事がない。整数型も約7万までしか扱えない16bitの整数では、上限にぶつからないか頻繁に気にする必要があったけど、 32bitの整数が使えればほとんど気にしなくて良いことが多い。</p>
+<p>コンピューターが32bit環境で十分な速度で動くようになったことで、 32bitのintと32bitのポインタを気軽に使えるようになった。プログラムが簡単になったし、やれることも一気に増えた。それがWindows95ブームの実態だったし、 インターネット時代の布石でもあったんだ。</p>
+<blockquote>
+<p>「はー、ポインタの大きさがそんなことに関わっていたとは知りませんでした。でも、Windowsってそんな昔からあったんですねー」</p>
+</blockquote>
+<p>ぐはっ、いや、その前にWindows3.1というのが・・・まあいいか。それに比べて32bitから64bitへの変化は緩やかだった。もちろんコンピュータが搭載するメモリは4GBを遙かに超えたし、 4GBを越える巨大なデータを扱う必要があるプログラムの需要もたくさんある。ただ、普通に私たちが日常的に使うプログラムの範囲では、 <code>sizeof(int*)</code>が8バイトを返す様になっても、それほど変わらなかったんだ。</p>
+<blockquote>
+<p>「そうですね。私のPCのメモリは4GBしかないから、32bitのポインタでも端から端まで読み放題です。PCで使っているデータが全部読めちゃうってことですよね」</p>
+</blockquote>
+<p>そんなわけはないよね。</p>
+<blockquote>
+<p>「えっ？」</p>
+</blockquote>
+<h2 id="プロテクトモード">プロテクトモード</h2>
+<p>君が使っているそのPCではいろんなプログラムが動いているよね？</p>
+<blockquote>
+<p>「そうですね。Webブラウザだけでも3種類ぐらい動いてます。」</p>
+</blockquote>
+<p>なんでだろう。まあいいか。</p>
+<p>じゃあ、FirefoxとChromeが動いているとしよう。 Firefoxでオンラインバンキングを表示させているとして、Chromeはその画面の情報を知ることができるだろうか。</p>
+<blockquote>
+<p>「それはマズいですね。もしそんなことができたらセキュリティホールじゃないですか」</p>
+</blockquote>
+<p>その通りだ。しかし、ChromeはたぶんC/C++で作られている。 Chromeのソースコードの中で、ポインタを0から順に大きくしていったら、メモリ上のどこにだって観られると思わないかい？そのどこかには君の口座番号が必ず入っているはずだよ。</p>
+<blockquote>
+<p>「ホントだ！ヤバいじゃないですか。オンラインバンキングを使うときは他のプログラムは全部落とすことにします。親にも注意しておこう」</p>
+</blockquote>
+<p>もちろんそんなことはしなくて良い。</p>
+</div>
+<div class="note">
+</div>
+</div>
+</body>
+</html>
