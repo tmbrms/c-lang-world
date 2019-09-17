@@ -356,6 +356,7 @@ CPUこそ32bitが当たり前になっていたが、OSは16bitのものが多�
 ```c
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
 
 int main(int argc, char **argv){
   float pi = M_PI;
@@ -363,7 +364,7 @@ int main(int argc, char **argv){
   printf("pi = %f\n", pi);
   printf("size of float = %lu\n", sizeof(pi));
 
-  unsigned char *p = &pi;
+  uint8_t *p = &pi;
 
   for(int i = 0; i < sizeof(pi); i++){
     printf("|%02x| ", *(p + i));
@@ -384,13 +385,13 @@ size of float = 4
 
 実行結果の1行目はpiに入っている値を確認している。見慣れた円周率だね。
 次の行はpiのサイズを表示している。floatは4バイトという意味だ。
-そして、piのポインタをunsigned char型(符号なし1バイト整数型)の
+そして、piのポインタをuint8_t型(符号なし1バイト整数型)の
 ポインタに代入している。
-fload型のポインタをunsigned char型のポインタに
+fload型のポインタをuint8_t型のポインタに
 代入することは普通あり得ないので、コンパイラは警告を出すけど、
 エラーにはならない。C言語らしいと言えるだろう。
 
-そして、unsigned char型のポインタを1つずつ動かして、
+そして、uint8_t型のポインタを1つずつ動かして、
 メモリ上に書かれている値を1バイトずつ4つ読み出している。
 
 > 「ここまでは文字列でやったのと同じですよね？」
@@ -440,7 +441,7 @@ C言語の規格には、浮動小数点がどのようにメモリ上で表現�
 
 小数を上のように、(1)符号 (2)仮数 (3)指数 の3つにわけて
 それぞれ(1)1ビット (2)23ビット (3)8ビットを割り当てる。
-ただし、2進数の小数だけどな。
+ただし、(2)は10進数ではなく、2進数の小数として表現されるけど。
 メモリ上の順番は符号-指数-仮数の順番だ。
 
 だから、0x40490fdb = 0100_0000_0100_1001_0000_1111_1101_1011 (_は読みやすさのために付けたもので、ないものとして解釈して欲しい)は
@@ -617,7 +618,7 @@ C言語は簡単に変更できる。
 
 1. データは32bitごとに区切られている
 2. 0x00000000が送られてきたら、データの開始である。
-3. まず、データの個数を送る。32bitの整数が送られる。
+3. まず、データの個数を送る。32bitの符号なし整数が送られる。
 4. 次にデータの個数分、32bitの浮動小数点データが送られる。
 
 まあ、あっても不思議じゃない機械だと思うね。
@@ -625,15 +626,15 @@ C言語は簡単に変更できる。
 さて、イメージとしてこんな感じのコードが考えられると思う。
 
 ```c
-unsigned int marker;
+uint32_t marker;
 
 marker = get_data();
 
 if(marker == 0){
-  int count = get_data();
+  uint32_t count = get_data();
 
-  for(int i = 0; i < count; i++){
-    int data = get_data();
+  for(uint32_t i = 0; i < count; i++){
+    uint32_t data = get_data();
     printf("DATA%d: %f", i+1, *((float*)data));
   }
 }
@@ -643,10 +644,10 @@ if(marker == 0){
 こんな感じのコードがプログラムのどこかにあるというイメージを
 持ってくれ。
 `get_data()`は呼び出すとこの装置から 32bit分のデータを読み込む。
-戻り値の型はunsigned intと定義されているとしよう。
+戻り値の型はuint32_t(符号なし32bit整数)と定義されているとしよう。
 
 ただし、`get_data()`から取得したデータは
-unsigned intと解釈すべきときと、floatと解釈すべきときの
+uint32_tと解釈すべきときと、floatと解釈すべきときの
 2通りがある。装置とアクセスしたり、ネットワークで
 データをやりとりすると、こういうケースはちょいちょいあるんだ。
 
@@ -664,7 +665,7 @@ C言語が得意な世界というのは、そういうものを扱うところ�
 
 ```c
 typedef union {
-  unsigned int count; // データ個数
+  uint32_t count; // データ個数
   float data; // 測定データ
 } DATA_ROW;
 ```
@@ -692,7 +693,7 @@ marker = get_data();
 if(marker.count == 0){
   DATA_ROW c = get_data();
 
-  for(int i = 0; i < c.count; i++){
+  for(uint32_t i = 0; i < c.count; i++){
     DATA_ROW d = get_data();
     printf("DATA%d: %f", i+1, d.data));
   }

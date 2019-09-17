@@ -271,26 +271,27 @@ VALUE: 74</code></pre>
 <p>もうひとつ、実例で試して見ようか。浮動小数点型がどのようにメモリ内に格納されているか確認してみよう。</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb9-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
 <a class="sourceLine" id="cb9-2" title="2"><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></a>
-<a class="sourceLine" id="cb9-3" title="3"></a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv){</a>
-<a class="sourceLine" id="cb9-5" title="5">  <span class="dt">float</span> pi = M_PI;</a>
-<a class="sourceLine" id="cb9-6" title="6"></a>
-<a class="sourceLine" id="cb9-7" title="7">  printf(<span class="st">&quot;pi = %f</span><span class="sc">\n</span><span class="st">&quot;</span>, pi);</a>
-<a class="sourceLine" id="cb9-8" title="8">  printf(<span class="st">&quot;size of float = %lu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span>(pi));</a>
-<a class="sourceLine" id="cb9-9" title="9"></a>
-<a class="sourceLine" id="cb9-10" title="10">  <span class="dt">unsigned</span> <span class="dt">char</span> *p = &amp;pi;</a>
-<a class="sourceLine" id="cb9-11" title="11"></a>
-<a class="sourceLine" id="cb9-12" title="12">  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="kw">sizeof</span>(pi); i++){</a>
-<a class="sourceLine" id="cb9-13" title="13">    printf(<span class="st">&quot;|%02x| &quot;</span>, *(p + i));</a>
-<a class="sourceLine" id="cb9-14" title="14">  }</a>
-<a class="sourceLine" id="cb9-15" title="15">}</a></code></pre></div>
+<a class="sourceLine" id="cb9-3" title="3"><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span></a>
+<a class="sourceLine" id="cb9-4" title="4"></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv){</a>
+<a class="sourceLine" id="cb9-6" title="6">  <span class="dt">float</span> pi = M_PI;</a>
+<a class="sourceLine" id="cb9-7" title="7"></a>
+<a class="sourceLine" id="cb9-8" title="8">  printf(<span class="st">&quot;pi = %f</span><span class="sc">\n</span><span class="st">&quot;</span>, pi);</a>
+<a class="sourceLine" id="cb9-9" title="9">  printf(<span class="st">&quot;size of float = %lu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span>(pi));</a>
+<a class="sourceLine" id="cb9-10" title="10"></a>
+<a class="sourceLine" id="cb9-11" title="11">  <span class="dt">uint8_t</span> *p = &amp;pi;</a>
+<a class="sourceLine" id="cb9-12" title="12"></a>
+<a class="sourceLine" id="cb9-13" title="13">  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="kw">sizeof</span>(pi); i++){</a>
+<a class="sourceLine" id="cb9-14" title="14">    printf(<span class="st">&quot;|%02x| &quot;</span>, *(p + i));</a>
+<a class="sourceLine" id="cb9-15" title="15">  }</a>
+<a class="sourceLine" id="cb9-16" title="16">}</a></code></pre></div>
 <p>実行結果はこうなる。</p>
 <pre><code>pi = 3.141593
 size of float = 4
 |db| |0f| |49| |40|</code></pre>
 <p>浮動小数点型であるfloat型の変数piを作って、定数M_PIを代入している。この定数はC言語であらかじめ持っているものだ。</p>
-<p>実行結果の1行目はpiに入っている値を確認している。見慣れた円周率だね。次の行はpiのサイズを表示している。floatは4バイトという意味だ。そして、piのポインタをunsigned char型(符号なし1バイト整数型)のポインタに代入している。 fload型のポインタをunsigned char型のポインタに代入することは普通あり得ないので、コンパイラは警告を出すけど、エラーにはならない。C言語らしいと言えるだろう。</p>
-<p>そして、unsigned char型のポインタを1つずつ動かして、メモリ上に書かれている値を1バイトずつ4つ読み出している。</p>
+<p>実行結果の1行目はpiに入っている値を確認している。見慣れた円周率だね。次の行はpiのサイズを表示している。floatは4バイトという意味だ。そして、piのポインタをuint8_t型(符号なし1バイト整数型)のポインタに代入している。 fload型のポインタをuint8_t型のポインタに代入することは普通あり得ないので、コンパイラは警告を出すけど、エラーにはならない。C言語らしいと言えるだろう。</p>
+<p>そして、uint8_t型のポインタを1つずつ動かして、メモリ上に書かれている値を1バイトずつ4つ読み出している。</p>
 <blockquote>
 <p>「ここまでは文字列でやったのと同じですよね？」</p>
 </blockquote>
@@ -306,7 +307,7 @@ size of float = 4
 <p>今から説明するのはIEEE754という規格で定義された単精度浮動小数点数の仕組みだ。大抵のC言語の実装ではこの規格に沿った浮動小数点を使っているらしい。</p>
 <p>そもそも浮動小数点というのは、小数を3つのパートにわけて保存するやり方だ。</p>
 <pre><code>-123.456 =&gt; (-1) × (1.23456) × 10^(2)</code></pre>
-<p>小数を上のように、(1)符号 (2)仮数 (3)指数 の3つにわけてそれぞれ(1)1ビット (2)23ビット (3)8ビットを割り当てる。ただし、2進数の小数だけどな。メモリ上の順番は符号-指数-仮数の順番だ。</p>
+<p>小数を上のように、(1)符号 (2)仮数 (3)指数 の3つにわけてそれぞれ(1)1ビット (2)23ビット (3)8ビットを割り当てる。ただし、(2)は10進数ではなく、2進数の小数として表現されるけど。メモリ上の順番は符号-指数-仮数の順番だ。</p>
 <p>だから、0x40490fdb = 0100_0000_0100_1001_0000_1111_1101_1011 (_は読みやすさのために付けたもので、ないものとして解釈して欲しい)は</p>
 <ul>
 <li>符号部:0</li>
@@ -411,25 +412,25 @@ i = 1078530011</code></pre>
 <ol type="1">
 <li>データは32bitごとに区切られている</li>
 <li>0x00000000が送られてきたら、データの開始である。</li>
-<li>まず、データの個数を送る。32bitの整数が送られる。</li>
+<li>まず、データの個数を送る。32bitの符号なし整数が送られる。</li>
 <li>次にデータの個数分、32bitの浮動小数点データが送られる。</li>
 </ol>
 <p>まあ、あっても不思議じゃない機械だと思うね。</p>
 <p>さて、イメージとしてこんな感じのコードが考えられると思う。</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb18-1" title="1"><span class="dt">unsigned</span> <span class="dt">int</span> marker;</a>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb18-1" title="1"><span class="dt">uint32_t</span> marker;</a>
 <a class="sourceLine" id="cb18-2" title="2"></a>
 <a class="sourceLine" id="cb18-3" title="3">marker = get_data();</a>
 <a class="sourceLine" id="cb18-4" title="4"></a>
 <a class="sourceLine" id="cb18-5" title="5"><span class="cf">if</span>(marker == <span class="dv">0</span>){</a>
-<a class="sourceLine" id="cb18-6" title="6">  <span class="dt">int</span> count = get_data();</a>
+<a class="sourceLine" id="cb18-6" title="6">  <span class="dt">uint32_t</span> count = get_data();</a>
 <a class="sourceLine" id="cb18-7" title="7"></a>
-<a class="sourceLine" id="cb18-8" title="8">  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; count; i++){</a>
-<a class="sourceLine" id="cb18-9" title="9">    <span class="dt">int</span> data = get_data();</a>
+<a class="sourceLine" id="cb18-8" title="8">  <span class="cf">for</span>(<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; count; i++){</a>
+<a class="sourceLine" id="cb18-9" title="9">    <span class="dt">uint32_t</span> data = get_data();</a>
 <a class="sourceLine" id="cb18-10" title="10">    printf(<span class="st">&quot;DATA%d: %f&quot;</span>, i+<span class="dv">1</span>, *((<span class="dt">float</span>*)data));</a>
 <a class="sourceLine" id="cb18-11" title="11">  }</a>
 <a class="sourceLine" id="cb18-12" title="12">}</a></code></pre></div>
-<p>このコードは断片で、このままでは動かない。こんな感じのコードがプログラムのどこかにあるというイメージを持ってくれ。 <code>get_data()</code>は呼び出すとこの装置から 32bit分のデータを読み込む。戻り値の型はunsigned intと定義されているとしよう。</p>
-<p>ただし、<code>get_data()</code>から取得したデータは unsigned intと解釈すべきときと、floatと解釈すべきときの 2通りがある。装置とアクセスしたり、ネットワークでデータをやりとりすると、こういうケースはちょいちょいあるんだ。</p>
+<p>このコードは断片で、このままでは動かない。こんな感じのコードがプログラムのどこかにあるというイメージを持ってくれ。 <code>get_data()</code>は呼び出すとこの装置から 32bit分のデータを読み込む。戻り値の型はuint32_t(符号なし32bit整数)と定義されているとしよう。</p>
+<p>ただし、<code>get_data()</code>から取得したデータは uint32_tと解釈すべきときと、floatと解釈すべきときの 2通りがある。装置とアクセスしたり、ネットワークでデータをやりとりすると、こういうケースはちょいちょいあるんだ。</p>
 <blockquote>
 <p>「装置から送られてくるデータかー。想像もしてなかったなあ」</p>
 </blockquote>
@@ -437,7 +438,7 @@ i = 1078530011</code></pre>
 <p>さて、<code>get_data()</code>で取得したデータは、整数のことも浮動小数点のこともあった。上のコードでは浮動小数点として解釈したいときはキャストしているけど、どうにも見づらいし、<code>get_data()</code>の戻り値は2通りの解釈があるということが、コードを読んでもよくわからない。</p>
 <p>こういう時に使う機能として、C言語には共用体というものがある。</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">typedef</span> <span class="kw">union</span> {</a>
-<a class="sourceLine" id="cb19-2" title="2">  <span class="dt">unsigned</span> <span class="dt">int</span> count; <span class="co">// データ個数</span></a>
+<a class="sourceLine" id="cb19-2" title="2">  <span class="dt">uint32_t</span> count; <span class="co">// データ個数</span></a>
 <a class="sourceLine" id="cb19-3" title="3">  <span class="dt">float</span> data; <span class="co">// 測定データ</span></a>
 <a class="sourceLine" id="cb19-4" title="4">} DATA_ROW;</a></code></pre></div>
 <p><code>union {型 メンバー名;}</code>とすることで、データをどのような型として解釈するのか定義できる。 <code>typedef</code>は新しい型名を定義する構文で、上のコードは、「新しい型名<code>DATA_ROW</code>は、整数でも浮動小数点でも解釈できるデータだ」という意味だ。 <code>DATA_ROW</code>型の変数<code>a</code>を整数と解釈したければ<code>a.count</code>、浮動小数点と解釈したければ<code>a.data</code>と記述する。一見、Javaのクラスのメンバーみたいに見えるが、 <code>a.count</code>も<code>a.data</code>も実体は同じ。2つの型を記録するのにメモリを共用しているので、共用体と言う。</p>
@@ -449,7 +450,7 @@ i = 1078530011</code></pre>
 <a class="sourceLine" id="cb20-5" title="5"><span class="cf">if</span>(marker.count == <span class="dv">0</span>){</a>
 <a class="sourceLine" id="cb20-6" title="6">  DATA_ROW c = get_data();</a>
 <a class="sourceLine" id="cb20-7" title="7"></a>
-<a class="sourceLine" id="cb20-8" title="8">  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; c.count; i++){</a>
+<a class="sourceLine" id="cb20-8" title="8">  <span class="cf">for</span>(<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; c.count; i++){</a>
 <a class="sourceLine" id="cb20-9" title="9">    DATA_ROW d = get_data();</a>
 <a class="sourceLine" id="cb20-10" title="10">    printf(<span class="st">&quot;DATA%d: %f&quot;</span>, i+<span class="dv">1</span>, d.data));</a>
 <a class="sourceLine" id="cb20-11" title="11">  }</a>
