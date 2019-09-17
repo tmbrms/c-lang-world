@@ -18,7 +18,7 @@
     * 32bitポインタ
     * インテルi386プロテクトモード
     * Segmentation Fault
-* 文字列
+* [文字列](https://tmbrms.github.io/c-lang-world/5/String.html)
     * C言語に文字列はない
     * 配列
     * 番兵法とヌル終端文字列
