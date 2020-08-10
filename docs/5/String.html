@@ -49,6 +49,69 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
+  <style>
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -95,12 +158,373 @@
 <blockquote>
 <p>「じゃあ、文字列はあるじゃないですか」</p>
 </blockquote>
-<p>でも、文字の配列と文字列が同じ言語って他に思いつく？</p>
-<p>Javaはその2つの間を変換できるようになっているけど、でも、Char型の配列とString型は全然違うものじゃないか？</p>
+<p>いや、文字の配列と文字列は違うものだろ。</p>
+<p>Javaはその2つの間を変換できるようになっているけど、でも、Char型の配列とString型は全然違うものだよね。</p>
 <blockquote>
 <p>「うーん・・・、そう言われればそうですけど、ピンとこないです」</p>
 </blockquote>
 <h2 id="配列">配列</h2>
+<p>さて、C言語では文字列を処理するために文字の配列を使う。では、C言語において配列とはなんだろうか。</p>
+<blockquote>
+<p>「えっ？同じ型のデータの集合じゃないんですか？」</p>
+</blockquote>
+<p>概念的にはそんな感じでいいと思うんだけど、なにせ今扱っているのはC言語だ。データを扱うのなら、メモリマップ上でどうなっているのかがはっきりしないといけない。では、配列を使うとメモリの上ではどうなっているんだろうか。</p>
+<p>例えば、32bitの整数の配列を作ったとしよう。そして、そのポインタを表示してみよう。そのためのコードは下のようになる。ちなみに<code>&amp;(ary[0])</code>は配列aryの先頭のアドレスという意味だ。これは<code>&amp;ary[0]</code>と書いてもいい。<code>(&amp;ary)[0]</code>ではなく<code>&amp;(ary[0])</code>と解釈される。でも、わかりやすさをとってわざと括弧をつけておいた。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="dt">int</span> ary[] = {<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>};</a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3">printf(<span class="st">&quot;address of ary[0]: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;(ary[<span class="dv">0</span>]));</a>
+<a class="sourceLine" id="cb1-4" title="4">printf(<span class="st">&quot;value of ary[0]: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, ary[<span class="dv">0</span>]);</a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">printf(<span class="st">&quot;address of ary[3]: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;(ary[<span class="dv">3</span>]));</a>
+<a class="sourceLine" id="cb1-7" title="7">printf(<span class="st">&quot;value of ary[3]: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, ary[<span class="dv">3</span>]);</a></code></pre></div>
+<p>実行結果はこんな感じだとしよう。いつものように、アドレスは実行環境に依るし、実行のたびに違うかもしれない。</p>
+<pre><code>address of ary[0]: 0x7ffeed318930
+value of ary[0]: 1
+address of ary[3]: 0x7ffeed31893c
+value of ary[3]: 1000</code></pre>
+<p>つまり、メモリ上はこういう感じになっていると考えられる。めんどくさいので値は16進数ではなく、10進数で書いた。</p>
+<figure>
+<img src="./int_array.png" alt="32bit整数の配列" /><figcaption>32bit整数の配列</figcaption>
+</figure>
+<p>32bitなので1バイトのマスを4つ分使うことになる。要素は4つなので、計16個のマスが使われるわけだ。</p>
+<blockquote>
+<p>「違和感ないです。当たり前のように思えます。」</p>
+</blockquote>
+<p>さて、この配列にはaryという名前がついていて、ary[0]のようにインデックスを付けると中身が取り出せるんだけど・・・物理的にaryという変数には何が入っているんだろうか。見てみよう。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">int</span> ary[] = {<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>};</a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3">printf(<span class="st">&quot;address of ary[0]: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;(ary[<span class="dv">0</span>]));</a>
+<a class="sourceLine" id="cb3-4" title="4">printf(<span class="st">&quot;value of ary[0]: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, ary[<span class="dv">0</span>]);</a>
+<a class="sourceLine" id="cb3-5" title="5"></a>
+<a class="sourceLine" id="cb3-6" title="6">printf(<span class="st">&quot;inside of ary:%p</span><span class="sc">\n</span><span class="st">&quot;</span>, ary); <span class="co">// &lt;= 追加</span></a></code></pre></div>
+<p>実行結果は、こうなる。ary[0]のアドレスと、aryの中身はおんなじものだ。つまり、aryの中にはary[0]のアドレスが入っている。つまり、aryは配列の先頭を指しているポインタだ。</p>
+<pre><code>address of ary[0]: 0x7ffeed318930
+value of ary[0]: 1
+address of ary[3]: 0x7ffeed31893c
+value of ary[3]: 1000
+inside of ary: 0x7ffeed318930</code></pre>
+<p>だから、<code>*ary</code>とすると値が取り出せる。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" title="1"><span class="dt">int</span> ary[] = {<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>};</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3">printf(<span class="st">&quot;value of *ary: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, *ary);</a></code></pre></div>
+<p>それどころか、ポインタへの加減算も出来る。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb6-1" title="1"><span class="dt">int</span> ary[] = {<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>};</a>
+<a class="sourceLine" id="cb6-2" title="2"></a>
+<a class="sourceLine" id="cb6-3" title="3">printf(<span class="st">&quot;address of ary[3]: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;(ary[<span class="dv">3</span>]));</a>
+<a class="sourceLine" id="cb6-4" title="4">printf(<span class="st">&quot;value of ary[3]: %d</span><span class="sc">\n</span><span class="st">&quot;</span>, ary[<span class="dv">3</span>]);</a>
+<a class="sourceLine" id="cb6-5" title="5"></a>
+<a class="sourceLine" id="cb6-6" title="6">printf(<span class="st">&quot;inside of ary+3:%p</span><span class="sc">\n</span><span class="st">&quot;</span>, ary + <span class="dv">3</span>);</a>
+<a class="sourceLine" id="cb6-7" title="7">printf(<span class="st">&quot;value of *(ary+3): %d</span><span class="sc">\n</span><span class="st">&quot;</span>, *(ary + <span class="dv">3</span>));</a></code></pre></div>
+<p>実行結果</p>
+<pre><code>address of ary[3]: 0x7ffeed318930
+value of ary[3]: 1000
+inside of ary+3:0x7ffeed31893c
+value of *(ary+3): 1000</code></pre>
+<p>ここで重要なことは、aryが0x7ffeed318930だとして、 <strong>ary+3はx7ffeed318933じゃなくて</strong> 0x7ffeed31893cだということだ。つまり、ポインタに1足すということは、その型のサイズ分ポインタが移動するということだ。</p>
+<blockquote>
+<p>「えっ、えっ？ちょっと待ってください。どういうこと？というか、なんでそんなややこしいことを？」</p>
+</blockquote>
+<p>さっきのメモリマップで考えてみよう。</p>
+<figure>
+<img src="add_to_ptr.png" alt="ポインタの加算" /><figcaption>ポインタの加算</figcaption>
+</figure>
+<p>intのポインタ<code>ptr</code>がアドレス0x7ffeed318930を指しているとする。そのとき、<code>ptr+1</code>が指しているのは0x7ffeed318933ではなくて、0x7ffeed318934だ。だって、<code>*(ptr+1)</code>がintだとしたら、すくなくとも0x7ffeed318933を指していたらおかしなことになるだろう？</p>
+<blockquote>
+<p>「考えさせて下さい・・・そうですね。0x7ffeed318933から4バイトを読んで整数として解釈したいって事はまずないでしょうね。なるほど、データの先頭へ必ず飛ぶようにする方が親切なのか・・・」</p>
+</blockquote>
+<p>というか、要するに<code>ary[3]</code>と<code>*(ary+3)</code>は同じ意味だ。書き方が違うだけだ。<code>ary[3]</code>の方がわかりやすいから、同じ意味で別の書き方が用意されているだけだと思って良い。</p>
+<blockquote>
+<p>「おお？・・・つまり、C言語では配列って特別なものはなくて、要するにポインタを使ってメモリ上のデータを読んでいるだけってことなんですね」</p>
+</blockquote>
+<p>大まかに言えばそういうことだ。ただし、C言語にも配列という概念はあって、ポインタと配列には大きな違いがある。それは、配列を宣言したらメモリが確保されるということだ。逆に言えば、大きさが決まらないと配列は宣言できない。</p>
+<p>だから、Cで許される配列の宣言は、下のどちらかだ。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" title="1"><span class="co">//長さが10のintの配列。メモリが40バイト確保される。</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="dt">int</span> ary1[<span class="dv">10</span>];</a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">//長さが4のintの配列。メモリが16バイト確保される</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="dt">int</span> ary2[] = {<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>};</a></code></pre></div>
+<p>最近のC言語の仕様では<code>ary3[n]</code>のように長さを変数にすることも出来る。でも、少なくとも実行時には長さは確定しなければいけない。なぜならそのタイミングで具体的にメモリを確保する必要があるからだ。後から長さを増やすことはできない。なぜなら、増やそうと思ってもそのすぐ後ろのメモリ領域はもう何かに使っちゃってるかもしれないし、別なメモリ領域に続きを確保することもできない。だってポインタを足して、つまりずらしてデータの位置を決めて読み出しているんだから、絶対に連続してないと困るわけだ。</p>
+<p>逆に、ポインタはいつでも宣言し放題だ。ただし、ポインタが指している位置のメモリが確保されているか、何が入っているかは自己責任だ。そこが「ポインタは危ない」といわれる所以だね。</p>
+<h2 id="番兵法とヌル終端文字列">番兵法とヌル終端文字列</h2>
+<p>さて、C言語の配列は結局、データが保持されているメモリ領域の先頭のポインタを持っているだけだった。ここまではいいよね？</p>
+<blockquote>
+<p>「理解しました。シンプルですね。ちょっとビックリはしましたけど、こんなもんで大丈夫なものなんですね」</p>
+</blockquote>
+<p>そう。C言語の配列はもの凄くシンプルだ。そして、それゆえしばしば大丈夫じゃない。だって、配列の先頭のアドレスがわかっても、終わりのアドレスがわからないから、配列の長さがわからない。</p>
+<blockquote>
+<p>「んん？んんんん・・・？そう・・・なりますかね。つまり・・・？」</p>
+</blockquote>
+<p>例えば、Javaだと、配列の要素をひとつずつ取り出したいとき、以下の様に書ける。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java"><code class="sourceCode java"><a class="sourceLine" id="cb9-1" title="1"><span class="dt">int</span> ary[] = {<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>};</a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="kw">for</span>(i = <span class="dv">0</span>; i &lt; ary.<span class="fu">length</span>; i++){</a>
+<a class="sourceLine" id="cb9-4" title="4">    <span class="bu">System</span>.<span class="fu">println</span>(ary[i]);</a>
+<a class="sourceLine" id="cb9-5" title="5">}</a></code></pre></div>
+<p>C言語では、<code>length</code>に当たるものがないので、上と同じコードは書けないんだ。</p>
+<blockquote>
+<p>「えー」</p>
+</blockquote>
+<p>ちなみに、syzeof演算子というものはある。<code>sizeof 式</code>の形と<code>sizeof(型)</code>の形があって、こうやって使う。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb10-1" title="1"><span class="dt">int</span> ary1[] = {<span class="dv">1</span>, <span class="dv">10</span>};</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="dt">int</span> ary2[] = {<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>};</a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="co">// sizeof 式 で、式のバイト数が求められる</span></a>
+<a class="sourceLine" id="cb10-5" title="5">printf(<span class="st">&quot;size of ary1: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary1);</a>
+<a class="sourceLine" id="cb10-6" title="6">printf(<span class="st">&quot;size of ary2: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary2);</a>
+<a class="sourceLine" id="cb10-7" title="7"></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">// sizeof(型) で、型のバイト数が求められる</span></a>
+<a class="sourceLine" id="cb10-9" title="9">printf(<span class="st">&quot;size of int: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span>(<span class="dt">int</span>));</a>
+<a class="sourceLine" id="cb10-10" title="10"></a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="co">// 割り算をすると要素数が出せる</span></a>
+<a class="sourceLine" id="cb10-12" title="12">printf(<span class="st">&quot;length of ary1: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary1 / <span class="kw">sizeof</span>(<span class="dt">int</span>));</a>
+<a class="sourceLine" id="cb10-13" title="13">printf(<span class="st">&quot;length of ary2: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary2 / <span class="kw">sizeof</span>(<span class="dt">int</span>));</a></code></pre></div>
+<p>実行結果</p>
+<pre><code>size of ary1: 8
+size of ary2: 16
+size of int: 4
+length of ary1: 2
+length of ary2: 4</code></pre>
+<blockquote>
+<p>「あ、ちゃんと要素数が出せてるじゃないですか。なあんだ、ちょっとJavaより一手間かかっているけど、要素数は出せるんですね」</p>
+</blockquote>
+<p>と思って安心すると酷いバグを生むことになる。sizeof演算子は要注意だ。以下のプログラムをよく見て欲しい。実行結果はどうなるだろうか。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb12-1" title="1"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</a>
+<a class="sourceLine" id="cb12-2" title="2">{</a>
+<a class="sourceLine" id="cb12-3" title="3">  <span class="dt">int</span> ary1[] = {<span class="dv">1</span>, <span class="dv">10</span>};</a>
+<a class="sourceLine" id="cb12-4" title="4">  <span class="dt">int</span> ary2[] = {<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>};</a>
+<a class="sourceLine" id="cb12-5" title="5"></a>
+<a class="sourceLine" id="cb12-6" title="6">  f(ary1, ary2);</a>
+<a class="sourceLine" id="cb12-7" title="7">}</a>
+<a class="sourceLine" id="cb12-8" title="8"></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="dt">void</span> f(<span class="dt">int</span> ary1[], <span class="dt">int</span> ary2[])</a>
+<a class="sourceLine" id="cb12-10" title="10">{</a>
+<a class="sourceLine" id="cb12-11" title="11">  <span class="co">// sizeof 式 で、式のバイト数が求められる</span></a>
+<a class="sourceLine" id="cb12-12" title="12">  printf(<span class="st">&quot;size of ary1: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary1);</a>
+<a class="sourceLine" id="cb12-13" title="13">  printf(<span class="st">&quot;size of ary2: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary2);</a>
+<a class="sourceLine" id="cb12-14" title="14"></a>
+<a class="sourceLine" id="cb12-15" title="15">  <span class="co">// sizeof(型) で、型のバイト数が求められる</span></a>
+<a class="sourceLine" id="cb12-16" title="16">  printf(<span class="st">&quot;size of int: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span>(<span class="dt">int</span>));</a>
+<a class="sourceLine" id="cb12-17" title="17"></a>
+<a class="sourceLine" id="cb12-18" title="18">  <span class="co">// 割り算をすると要素数が出せる</span></a>
+<a class="sourceLine" id="cb12-19" title="19">  printf(<span class="st">&quot;length of ary1: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary1 / <span class="kw">sizeof</span>(<span class="dt">int</span>));</a>
+<a class="sourceLine" id="cb12-20" title="20">  printf(<span class="st">&quot;length of ary2: %zu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span> ary2 / <span class="kw">sizeof</span>(<span class="dt">int</span>));</a>
+<a class="sourceLine" id="cb12-21" title="21">}</a></code></pre></div>
+<blockquote>
+<p>「えっと、さっきのコードが2つの関数に分離されただけですよね？main関数で配列を作って、f関数でsizeofしていると。さっきと同じ結果になると思います。ならなかったら、コンパイラのバグでしょう！」</p>
+</blockquote>
+<p>わざわざ聞くぐらいだから、もちろん同じ結果にはならないよ。</p>
+<pre><code>size of ary1: 8
+size of ary2: 8
+size of int: 4
+length of ary1: 2
+length of ary2: 2</code></pre>
+<blockquote>
+<p>「うそーん・・・」</p>
+</blockquote>
+<p>もちろんコンパイラのバグではない。まあ、しょっちゅう疑われるからだろう。手元のコンパイラは金切り声で警告を出している。</p>
+<pre><code>ch5_2.c:18:40: warning: sizeof on array function parameter will return size of
+      &#39;int *&#39; instead of &#39;int []&#39; [-Wsizeof-array-argument]
+  printf(&quot;size of ary1: %zu\n&quot;, sizeof ary1);
+                                       ^</code></pre>
+<p>直訳すると「警告: 配列の関数パラメータにおけるsizeofは、’int[]’ではなく’int *’のサイズを返します」と書いてある。何か間違ったことをしてしまっていることはすぐ気がつくだろう。</p>
+<p>つまり、こういうことだ。</p>
+<p>関数の定義に</p>
+<pre><code>void f(int ary1[], int ary2[])</code></pre>
+<p>と書いた場合、実際には</p>
+<pre><code>void f(int *ary1, int *ary2)</code></pre>
+<p>と処理される。つまり、関数fにはポインタが渡っていて、それが実際に配列の先頭アドレスかどうかはもうわからないということなんだ。</p>
+<p>つまり、配列を宣言してメモリを確保して、その配列の名前が使えるところでは、処理系は配列の大きさをまだ覚えている。自分で確保したわけだからね。しかし、それがいったん関数呼び出しなどによって別な名前に引き継がれるときには、先頭アドレスの情報しか伝わらない。つまり、ポインタとして渡されることになる。いったんそうなってしまうと、それが配列の先頭アドレスだとしても、一体、要素数はいくつなのかはわからなくなってしまう。</p>
+<p>そこで、関数に配列を渡して処理して欲しいときは、何らかの方法で配列の終わりの位置を教えてやらなければいけない。</p>
+<blockquote>
+<p>「何らかの方法って？」</p>
+</blockquote>
+<p>一番簡単なのは、長さも一緒に渡してやることだ。</p>
+<pre><code>int main(int argc, char **argv)
+{
+  int ary[] = {1, 10, 100, 1000};
+
+  f(sizeof ary / sizeof(int), ary);
+}
+
+void f(int size, int ary[])
+{
+  for (int i = 0; i &lt; size; i++)
+  {
+    printf(&quot;%d\n&quot;, ary[i]);
+  }
+}</code></pre>
+<p>のようにする。そうすれば、問題なくfor文が書けるよね。</p>
+<p>あるいは、番兵法という方法がある。番兵というのはあり得ないデータのことだ。番兵をデータの最後に入れて、それがきたらデータの末尾だと判定させるのが番兵法。例えば、このintの配列には正のデータしか来ないとする。その場合にあらかじめデータの最後のマークとして-1を入れておくことにする。</p>
+<pre><code>int main(int argc, char **argv)
+{
+  int ary[] = {1, 10, 100, 1000, -1};
+
+  f(ary);
+}
+
+void f(int ary[])
+{
+  for (int i = 0; ary[i] &gt;= 0; i++)
+  {
+    printf(&quot;%d\n&quot;, ary[i]);
+  }
+}</code></pre>
+<p>すると関数fの引数が1つ減らせる。が、データが4つしかないのに配列には5つ分のデータが必要になるし、符号なし整数で扱えるデータだったのに符号付き整数が必要になったりする。ここはトレードオフだ。</p>
+<blockquote>
+<p>「ふむふむ。やってることは理解できました。でも、自分でやるのなら要素数も一緒に渡す方がわかりやすいですかね。というか、配列の変数の中に要素数も一緒にいれて、セットで渡せるようにすればいいのに」</p>
+</blockquote>
+<p>それはもっともな意見だし、たぶんJavaはそう実装されてるんだと思うよ。ただし、例えば要素数を保持するために32bitの整数を使うとすれば、空の配列のためにも余計に4バイトが必要になる。これはたぶん現代のコンピューティング環境のほとんどでは問題にならないデータサイズだから、ほとんどのモダンな言語の配列は要素数を自分で保持しているはずだ。ただし、C言語はその4バイトも惜しいというような非常にミニマムな環境や要素数が32bitでは収まらないというような巨大なデータを扱う環境でも使われることが期待されている。なので、配列のサイズをどう管理するかもプログラマにお任せだ。</p>
+<p>ということで、C言語の配列の説明はおしまい。文字列の話に戻る。</p>
+<blockquote>
+<p>「あ、そうだった。文字列の話でした。C言語の文字列は文字の配列。配列は本質的にはただポインタ、でしたね」</p>
+</blockquote>
+<p>そう。そして、C言語の配列はサイズの管理を自分でやる。つまり、文字列は文字型のポインタ。文字列の長さは番兵法で管理する。</p>
+<blockquote>
+<p>「おっと、そっちを使うんですか」</p>
+</blockquote>
+<p>そうだ。文字型というのは、文字コードを格納する整数だ。そして、ASCIIコード表を確認して欲しいが、数字の0に文字は割り当てられていない。そこで、文字の配列で最後に0がきたら、そこで文字列はおしまい、と言うことになっている。</p>
+<blockquote>
+<p>「そんなに一気に言われてもわからないです」</p>
+</blockquote>
+<p>OK。例で説明しよう。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb19-1" title="1"><span class="dt">char</span> str[] = <span class="st">&quot;Hello&quot;</span>;</a>
+<a class="sourceLine" id="cb19-2" title="2"></a>
+<a class="sourceLine" id="cb19-3" title="3">printf(<span class="st">&quot;length of %s: %zu&quot;</span>, str, <span class="kw">sizeof</span> str / <span class="kw">sizeof</span>(<span class="dt">char</span>));</a></code></pre></div>
+<p>さあ、実行結果はどうなる？</p>
+<blockquote>
+<p>「えーっと、“Hello”は5文字だから、str[]の長さは5・・・じゃないとは思います」</p>
+</blockquote>
+<p>設問の意図だけ理解してるな。その通り。実行結果はこうなる。</p>
+<pre><code>length of Hello: 6</code></pre>
+<blockquote>
+<p>「ふむふむ。5文字と最後に番兵ですな」</p>
+</blockquote>
+<p>そういうこと。つまり、このプログラムはこう書き換えても同じだ。全く同じ結果を返す。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb21-1" title="1"><span class="dt">char</span> str[] = {<span class="dv">72</span>, <span class="dv">101</span>, <span class="dv">108</span>, <span class="dv">108</span>, <span class="dv">111</span>, <span class="dv">0</span>};</a>
+<a class="sourceLine" id="cb21-2" title="2"></a>
+<a class="sourceLine" id="cb21-3" title="3">printf(<span class="st">&quot;length of %s: %zu&quot;</span>, str, <span class="kw">sizeof</span> str / <span class="kw">sizeof</span>(<span class="dt">char</span>));</a></code></pre></div>
+<blockquote>
+<p>「あ、ホントに0が入ってるんだ」</p>
+</blockquote>
+<p>文字のリテラルもある。シングルクォートで囲むと文字列ではなく、文字になる。こう書き換えることも出来る。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb22-1" title="1"><span class="dt">char</span> str[] = {<span class="ch">&#39;H&#39;</span>, <span class="ch">&#39;e&#39;</span>, <span class="ch">&#39;l&#39;</span>, <span class="ch">&#39;l&#39;</span>, <span class="ch">&#39;o&#39;</span>, &#39;\<span class="dv">0</span><span class="er">&#39;</span>};</a></code></pre></div>
+<p><code>'\0'</code>が、数字の0を示す特殊文字だ。これをヌル文字と呼ぶ。そして、最後にヌルを置くことで終わりの位置を表現する文字列の表現方法をヌル終端文字列と呼ぶ。C言語では文字の配列でヌル終端文字列を扱うことによって文字列処理をするんだ。</p>
+<p>というわけでC言語では文字列処理はとてもめんどくさい。</p>
+<p>たとえば、2つのintの配列を繋げる処理を書きたいとする。素直に書くとこんな感じになるだろう。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb23-1" title="1"><span class="dt">int</span> ary1[] = {<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>};</a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="dt">int</span> ary2[] = {<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>};</a>
+<a class="sourceLine" id="cb23-3" title="3"></a>
+<a class="sourceLine" id="cb23-4" title="4"><span class="dt">unsigned</span> <span class="dt">long</span> size1 = <span class="kw">sizeof</span> ary1 / <span class="kw">sizeof</span>(<span class="dt">int</span>);</a>
+<a class="sourceLine" id="cb23-5" title="5"><span class="dt">unsigned</span> <span class="dt">long</span> size2 = <span class="kw">sizeof</span> ary2 / <span class="kw">sizeof</span>(<span class="dt">int</span>);</a>
+<a class="sourceLine" id="cb23-6" title="6"></a>
+<a class="sourceLine" id="cb23-7" title="7"><span class="dt">int</span> concat_ary[size1 + size2];</a>
+<a class="sourceLine" id="cb23-8" title="8"></a>
+<a class="sourceLine" id="cb23-9" title="9"><span class="dt">int</span> c = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb23-10" title="10"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size1; i++)</a>
+<a class="sourceLine" id="cb23-11" title="11">{</a>
+<a class="sourceLine" id="cb23-12" title="12">  concat_ary[c] = ary1[i];</a>
+<a class="sourceLine" id="cb23-13" title="13">  c++;</a>
+<a class="sourceLine" id="cb23-14" title="14">}</a>
+<a class="sourceLine" id="cb23-15" title="15"></a>
+<a class="sourceLine" id="cb23-16" title="16"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size2; i++)</a>
+<a class="sourceLine" id="cb23-17" title="17">{</a>
+<a class="sourceLine" id="cb23-18" title="18">  concat_ary[c] = ary2[i];</a>
+<a class="sourceLine" id="cb23-19" title="19">  c++;</a>
+<a class="sourceLine" id="cb23-20" title="20">}</a>
+<a class="sourceLine" id="cb23-21" title="21"></a>
+<a class="sourceLine" id="cb23-22" title="22"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size1 + size2; i++)</a>
+<a class="sourceLine" id="cb23-23" title="23">{</a>
+<a class="sourceLine" id="cb23-24" title="24">  printf(<span class="st">&quot;%d</span><span class="sc">\n</span><span class="st">&quot;</span>, concat_ary[i]);</a>
+<a class="sourceLine" id="cb23-25" title="25">}</a></code></pre></div>
+<p>実行結果</p>
+<pre><code>1
+2
+3
+4
+5
+6</code></pre>
+<p>特に不思議はないと思う。ところが、文字の配列で同じ事をするとき、考えることが増える。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb25-1" title="1"><span class="dt">char</span> str1[] = <span class="st">&quot;abc&quot;</span>;</a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="dt">char</span> str2[] = <span class="st">&quot;def&quot;</span>;</a>
+<a class="sourceLine" id="cb25-3" title="3"></a>
+<a class="sourceLine" id="cb25-4" title="4"><span class="dt">unsigned</span> <span class="dt">long</span> size1 = <span class="kw">sizeof</span> str1 / <span class="kw">sizeof</span>(<span class="dt">char</span>);</a>
+<a class="sourceLine" id="cb25-5" title="5"><span class="dt">unsigned</span> <span class="dt">long</span> size2 = <span class="kw">sizeof</span> str2 / <span class="kw">sizeof</span>(<span class="dt">char</span>);</a>
+<a class="sourceLine" id="cb25-6" title="6"></a>
+<a class="sourceLine" id="cb25-7" title="7"><span class="dt">char</span> concat_str[size1 + size2];</a>
+<a class="sourceLine" id="cb25-8" title="8"></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="dt">int</span> c = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb25-10" title="10"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size1; i++)</a>
+<a class="sourceLine" id="cb25-11" title="11">{</a>
+<a class="sourceLine" id="cb25-12" title="12">  concat_str[c] = str1[i];</a>
+<a class="sourceLine" id="cb25-13" title="13">  c++;</a>
+<a class="sourceLine" id="cb25-14" title="14">}</a>
+<a class="sourceLine" id="cb25-15" title="15"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size2; i++)</a>
+<a class="sourceLine" id="cb25-16" title="16">{</a>
+<a class="sourceLine" id="cb25-17" title="17">  concat_str[c] = str2[i];</a>
+<a class="sourceLine" id="cb25-18" title="18">  c++;</a>
+<a class="sourceLine" id="cb25-19" title="19">}</a>
+<a class="sourceLine" id="cb25-20" title="20"></a>
+<a class="sourceLine" id="cb25-21" title="21"><span class="co">// 結合した文字列&quot;abcdef&quot;を期待している</span></a>
+<a class="sourceLine" id="cb25-22" title="22">printf(<span class="st">&quot;concat str = %s</span><span class="sc">\n</span><span class="st">&quot;</span>, concat_str);</a>
+<a class="sourceLine" id="cb25-23" title="23"></a>
+<a class="sourceLine" id="cb25-24" title="24"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size1 + size2; i++)</a>
+<a class="sourceLine" id="cb25-25" title="25">{</a>
+<a class="sourceLine" id="cb25-26" title="26">  printf(<span class="st">&quot;%d</span><span class="sc">\n</span><span class="st">&quot;</span>, concat_str[i]);</a>
+<a class="sourceLine" id="cb25-27" title="27">}</a></code></pre></div>
+<p>実行結果</p>
+<pre><code>concat str = abc
+97
+98
+99
+0
+100
+101
+102
+0</code></pre>
+<p>配列はきちんと連結されているが、途中にヌル文字が来てしまっているので、文字列として表示仕様とすると“abc”しか表示されない。</p>
+<p>おかしいなと思って適当にググって、文字列の長さはstrlen()という関数を使うという単体の知識だけをゲットして、sizeofのところをstrlen()に置き換えてみたりするとさらなる悲劇が訪れる。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb27-1" title="1"><span class="dt">char</span> str1[] = <span class="st">&quot;abc&quot;</span>;</a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="dt">char</span> str2[] = <span class="st">&quot;def&quot;</span>;</a>
+<a class="sourceLine" id="cb27-3" title="3"></a>
+<a class="sourceLine" id="cb27-4" title="4"><span class="co">//ここを変更した</span></a>
+<a class="sourceLine" id="cb27-5" title="5"><span class="dt">unsigned</span> <span class="dt">long</span> size1 = strlen(str1);</a>
+<a class="sourceLine" id="cb27-6" title="6"><span class="dt">unsigned</span> <span class="dt">long</span> size2 = strlen(str2);</a>
+<a class="sourceLine" id="cb27-7" title="7"></a>
+<a class="sourceLine" id="cb27-8" title="8"><span class="dt">char</span> concat_str[size1 + size2];</a>
+<a class="sourceLine" id="cb27-9" title="9"></a>
+<a class="sourceLine" id="cb27-10" title="10"><span class="dt">int</span> c = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb27-11" title="11"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size1; i++)</a>
+<a class="sourceLine" id="cb27-12" title="12">{</a>
+<a class="sourceLine" id="cb27-13" title="13">  concat_str[c] = str1[i];</a>
+<a class="sourceLine" id="cb27-14" title="14">  c++;</a>
+<a class="sourceLine" id="cb27-15" title="15">}</a>
+<a class="sourceLine" id="cb27-16" title="16"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size2; i++)</a>
+<a class="sourceLine" id="cb27-17" title="17">{</a>
+<a class="sourceLine" id="cb27-18" title="18">  concat_str[c] = str2[i];</a>
+<a class="sourceLine" id="cb27-19" title="19">  c++;</a>
+<a class="sourceLine" id="cb27-20" title="20">}</a>
+<a class="sourceLine" id="cb27-21" title="21"></a>
+<a class="sourceLine" id="cb27-22" title="22">printf(<span class="st">&quot;concat str = %s</span><span class="sc">\n</span><span class="st">&quot;</span>, concat_str);</a>
+<a class="sourceLine" id="cb27-23" title="23"></a>
+<a class="sourceLine" id="cb27-24" title="24"><span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; size1 + size2; i++)</a>
+<a class="sourceLine" id="cb27-25" title="25">{</a>
+<a class="sourceLine" id="cb27-26" title="26">  printf(<span class="st">&quot;%d</span><span class="sc">\n</span><span class="st">&quot;</span>, concat_str[i]);</a>
+<a class="sourceLine" id="cb27-27" title="27">}</a></code></pre></div>
+<p>実行結果</p>
+<pre><code>concat str = abcdef
+97
+98
+99
+100
+101
+102</code></pre>
+<p>一見、ちゃんと動いているように見えるところが恐ろしい・・・</p>
+<blockquote>
+<p>「えーっと・・・そもそも“abcdef”という文字列のためには、配列はヌル文字の分もあわせて7文字必要なのに、concat_strは6文字分しかないですよね。最後にヌル文字書き込んでないし・・・。なんで正しく“abcdef”が表示されるんですか？」</p>
+</blockquote>
+<p>そりゃ、たまたま<code>concat_str+6</code>のアドレスのメモリの値が0だったからでしょ。こうやって動いたり動かなかったりするデバックの面倒くさーいバグが簡単に作られてしまうのがC言語の文字列処理なんだよ。</p>
+<p>あ、C言語で文字列の連結をするためにstrcat()という関数が用意されているんだけど、この関数も<strong>あらかじめ結合した後の文字列をヌル文字も考慮して保持するのに十分な文字の配列を確保して引数に渡さなきゃいけない</strong>ので、自分でヌル文字の考慮をしなきゃいけないことは変わらない。</p>
+<p>つまり、C言語の文字列は文字の配列、つまりポインタ操作だけで実現されているので凄くシンプルだ。だから、わかっている人が使うと凄くムダがなく、効率的で、高速なコードを書くことが出来る。けど、うっかりバグを作ってしまう落とし穴が無数に空いている。地面より穴の方が面積が広いぐらいだ。十分に注意してもらいたい。が、仕組みとしては面白いなと思って貰えるんじゃないかと思うし、もっともシンプルな文字列のデータ構造として、プログラマならヌル終端文字列はぜひ知っておいて欲しいところだ。</p>
 </div>
 <div class="note">
 </div>
