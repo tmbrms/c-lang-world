@@ -147,7 +147,7 @@ printf("value of *(ary+3): %d\n", *(ary + 3));
 実行結果
 
 ```
-address of ary[3]: 0x7ffeed318930
+address of ary[3]: 0x7ffeed31893c
 value of ary[3]: 1000
 inside of ary+3:0x7ffeed31893c
 value of *(ary+3): 1000
