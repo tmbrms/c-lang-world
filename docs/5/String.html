@@ -228,16 +228,16 @@ value of *(ary+3): 1000</code></pre>
 <figure>
 <img src="add_to_ptr.png" alt="ポインタの加算" /><figcaption>ポインタの加算</figcaption>
 </figure>
-<p>intのポインタ<code>ptr</code>がアドレス0x7ffeed318930を指しているとする。そのとき、<code>ptr+1</code>が指しているのは0x7ffeed318933ではなくて、0x7ffeed318934だ。だって、<code>*(ptr+1)</code>がintだとしたら、すくなくとも0x7ffeed318933を指していたらおかしなことになるだろう？</p>
+<p>intのポインタ<code>ptr</code>がアドレス0x7ffeed318930を指しているとする。そのとき、<code>ptr+1</code>が指しているのは0x7ffeed318931ではなくて、0x7ffeed318934だ。だって、<code>*(ptr+1)</code>がintだとしたら、すくなくとも0x7ffeed318931を指していたらおかしなことになるだろう？</p>
 <blockquote>
-<p>「考えさせて下さい・・・そうですね。0x7ffeed318933から4バイトを読んで整数として解釈したいって事はまずないでしょうね。なるほど、データの先頭へ必ず飛ぶようにする方が親切なのか・・・」</p>
+<p>「考えさせて下さい・・・そうですね。0x7ffeed318931から4バイトを読んで整数として解釈したいって事はまずないでしょうね。なるほど、データの先頭へ必ず飛ぶようにする方が親切なのか・・・」</p>
 </blockquote>
 <p>というか、要するに<code>ary[3]</code>と<code>*(ary+3)</code>は同じ意味だ。書き方が違うだけだ。<code>ary[3]</code>の方がわかりやすいから、同じ意味で別の書き方が用意されているだけだと思って良い。</p>
 <blockquote>
 <p>「おお？・・・つまり、C言語では配列って特別なものはなくて、要するにポインタを使ってメモリ上のデータを読んでいるだけってことなんですね」</p>
 </blockquote>
 <p>大まかに言えばそういうことだ。ただし、C言語にも配列という概念はあって、ポインタと配列には大きな違いがある。それは、配列を宣言したらメモリが確保されるということだ。逆に言えば、大きさが決まらないと配列は宣言できない。</p>
-<p>だから、Cで許される配列の宣言は、下のどちらかだ。</p>
+<p>だから、Cで許される配列の宣言の書き方は、下のどちらかだ。</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" title="1"><span class="co">//長さが10のintの配列。メモリが40バイト確保される。</span></a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="dt">int</span> ary1[<span class="dv">10</span>];</a>
 <a class="sourceLine" id="cb8-3" title="3"></a>
@@ -394,12 +394,12 @@ void f(int ary[])
 <blockquote>
 <p>「えーっと、“Hello”は5文字だから、str[]の長さは5・・・じゃないとは思います」</p>
 </blockquote>
-<p>設問の意図だけ理解してるな。その通り。実行結果はこうなる。</p>
+<p>設問の意図だけ理解してるな。以前の質問で懲りたとみえる。その通り。実行結果はこうなる。</p>
 <pre><code>length of Hello: 6</code></pre>
 <blockquote>
 <p>「ふむふむ。5文字と最後に番兵ですな」</p>
 </blockquote>
-<p>そういうこと。つまり、このプログラムはこう書き換えても同じだ。全く同じ結果を返す。</p>
+<p>そういうこと。つまり、このプログラムはこう書き換えても同じだ。全く同じ意味になる。</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb21-1" title="1"><span class="dt">char</span> str[] = {<span class="dv">72</span>, <span class="dv">101</span>, <span class="dv">108</span>, <span class="dv">108</span>, <span class="dv">111</span>, <span class="dv">0</span>};</a>
 <a class="sourceLine" id="cb21-2" title="2"></a>
 <a class="sourceLine" id="cb21-3" title="3">printf(<span class="st">&quot;length of %s: %zu&quot;</span>, str, <span class="kw">sizeof</span> str / <span class="kw">sizeof</span>(<span class="dt">char</span>));</a></code></pre></div>
@@ -525,6 +525,61 @@ void f(int ary[])
 <p>そりゃ、たまたま<code>concat_str+6</code>のアドレスのメモリの値が0だったからでしょ。こうやって動いたり動かなかったりするデバックの面倒くさーいバグが簡単に作られてしまうのがC言語の文字列処理なんだよ。</p>
 <p>あ、C言語で文字列の連結をするためにstrcat()という関数が用意されているんだけど、この関数も<strong>あらかじめ結合した後の文字列をヌル文字も考慮して保持するのに十分な文字の配列を確保して引数に渡さなきゃいけない</strong>ので、自分でヌル文字の考慮をしなきゃいけないことは変わらない。</p>
 <p>つまり、C言語の文字列は文字の配列、つまりポインタ操作だけで実現されているので凄くシンプルだ。だから、わかっている人が使うと凄くムダがなく、効率的で、高速なコードを書くことが出来る。けど、うっかりバグを作ってしまう落とし穴が無数に空いている。地面より穴の方が面積が広いぐらいだ。十分に注意してもらいたい。が、仕組みとしては面白いなと思って貰えるんじゃないかと思うし、もっともシンプルな文字列のデータ構造として、プログラマならヌル終端文字列はぜひ知っておいて欲しいところだ。</p>
+<h2 id="パスカル文字列">パスカル文字列</h2>
+<p>というわけで、C言語の文字列表現、つまりヌル終端文字列はなかなかやっかいだ。C++が使えるのなら、文字列だけはC++の文字列であるstd::stringを使っても良いかもしれないぐらいだ。だいだい、JavaのStringみたいに使えるものだと思っていていいと思う。たぶん。実は、C++はよく知らない。</p>
+<p>C言語の言語は、文字列をどう扱っているのだろうか。オブジェクト指向言語だとStringクラスを作っているんだろうが、もっと低レイヤーの言語ではどうだろうか。有名なのは、Pascalという言語の文字列だ。</p>
+<p>Pascalの文字列は、ヌル文字の代わりに、1バイトで文字列の長さを持っている。要するに、ヌル終端文字列なら、</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb29-1" title="1"><span class="dt">char</span> str[] = {<span class="ch">&#39;H&#39;</span>, <span class="ch">&#39;e&#39;</span>, <span class="ch">&#39;l&#39;</span>, <span class="ch">&#39;l&#39;</span>, <span class="ch">&#39;o&#39;</span>, \<span class="dv">0</span><span class="er">&#39;</span>};</a></code></pre></div>
+<p>とするところを、</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb30-1" title="1"><span class="dt">char</span> str[] = {<span class="dv">5</span>, <span class="ch">&#39;H&#39;</span>, <span class="ch">&#39;e&#39;</span>, <span class="ch">&#39;l&#39;</span>, <span class="ch">&#39;l&#39;</span>, <span class="ch">&#39;o&#39;</span>};</a></code></pre></div>
+<p>のようにする。文字コードそのものの他に1バイト余計にデータを使ってしまうのは変わらない。ただし、パスカル文字列は、文字列の終わりがどこかすぐわかる。先頭のポインタ位置を読んで、そこの数字分だけポインタをずらせばそれが文字列の終わりの位置だ。ヌル終端文字列では最初から順番に読んでいかないとどこで終わるのかがわからない。これはパスカル文字列の良い点だね。</p>
+<p>一方、1バイトで文字列の長さを表現しているから、255文字までの文字列しか作れない。非常に長い文字列は255文字以下の文字列に分けて管理する必要があるので、データ効率が悪くなる。例えば1000文字のASCII文字で表現される文字列は、ヌル終端文字列では1001バイトだけど、パスカル文字列だと4つの文字列で表現しないといけないから1004バイト必要になる。当然、4つの文字列の順番を管理するために文字列の配列みたいなものを作る必要もあるから、さらに使用するデータサイズは増えるだろう。プログラムを書く上で考慮しなければならないことも増える。</p>
+<p>だからどちらが良いとも言えないけども、Pascalに比べてC言語の方が圧倒的にメジャーなので、ヌル終端文字列を扱うことの方が多いと思うね。</p>
+<blockquote>
+<p>「Pascalって今でも使えるんですか？使っている人、見たことないんですけど・・・」</p>
+</blockquote>
+<p>うーん・・・その昔、Windowsのアプリ開発のためにDelphiという製品があって、そこではObject指向に拡張されたPascalを採用していた。なかなか人気があったんだけど、さすがにマイクロソフトのVisual Studioと戦うのは大変で、どうしてもメジャーにはなりきれなかったね。ちなみに、Delphiを作っていた人はいろいろあって今はマイクロソフトでC#を作っている。複雑な世の中だ。</p>
+<h2 id="長さと容量">長さと容量</h2>
+<p>さて、ヌル終端文字列とパスカル文字列はどちらにも共通した欠点がある。</p>
+<blockquote>
+<p>「なんだろう。使い方がめんどくさいことではないんですよね？」</p>
+</blockquote>
+<p>うーん、半分正解。答えは、長さを長くすることができないことだ。おかげで使い方がめんどくさいので、半分正解かな。</p>
+<blockquote>
+<p>「短くは出来るんですか？」</p>
+</blockquote>
+<p>できるよ。例えば、“Hello, World!”という文字列をちょん切って“Hello”にするのは簡単だ。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb31-1" title="1"><span class="dt">char</span> str[] = <span class="st">&quot;Hello, World!&quot;</span>;</a>
+<a class="sourceLine" id="cb31-2" title="2">str[<span class="dv">5</span>] = &#39;\<span class="dv">0</span><span class="er">&#39;</span>;</a>
+<a class="sourceLine" id="cb31-3" title="3"></a>
+<a class="sourceLine" id="cb31-4" title="4">printf(<span class="st">&quot;%s&quot;</span>, str); <span class="co">// =&gt; Hello と表示される</span></a></code></pre></div>
+<p>逆はできない。</p>
+<blockquote>
+<p>「後ろにどんどん書いていったらダメなんですか？」</p>
+</blockquote>
+<p>だって、後ろのアドレスのメモリ位置は誰かが使ってるかも知れないだろう？</p>
+<blockquote>
+<p>「あ、そっか・・・」</p>
+</blockquote>
+<p>なので、例えば“Hello”と“World”をくっつけたいと思ったら、新しく2つの文字列が収まるだけのメモリが空いてるところを探して、ここは新たに使うからねと確保して、そこに1文字ずつコピーしてやらなければならない。</p>
+<blockquote>
+<p>「めんど・・・」</p>
+</blockquote>
+<p>なので、よくやるのはあらかじめ十分な長さの配列を作っておいて、そこに文字列を足していくやり方だ。こういう感じね。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb32-1" title="1"><span class="dt">char</span> str[<span class="dv">256</span>];</a>
+<a class="sourceLine" id="cb32-2" title="2"></a>
+<a class="sourceLine" id="cb32-3" title="3"><span class="dt">char</span> str1[] = <span class="st">&quot;Hello&quot;</span>;</a>
+<a class="sourceLine" id="cb32-4" title="4"><span class="dt">char</span> str2[] = <span class="st">&quot;World&quot;</span>;</a>
+<a class="sourceLine" id="cb32-5" title="5"></a>
+<a class="sourceLine" id="cb32-6" title="6">strcpy(str, str1);</a>
+<a class="sourceLine" id="cb32-7" title="7">strcpy(str+strlen(str1), str2);</a>
+<a class="sourceLine" id="cb32-8" title="8"></a>
+<a class="sourceLine" id="cb32-9" title="9">printf(<span class="st">&quot;%s&quot;</span>, str); <span class="co">// =&gt; HelloWorld と表示される</span></a></code></pre></div>
+<p>strcpy(dst, src)はdstのポインタ位置へ、srcの文字列をコピーして、最後にヌル文字を付ける関数だ。</p>
+<p>このコードは、まず最初にstrの先頭のポインタからstr1の内容をコピーして、次にstrの先頭のポインタからstr1の長さ分だけポインタをずらして、そこにstr2をコピーしている。したがって、“Hello”と書いたすぐ後ろに、付いてたヌル文字を塗りつぶして“World”と書き込んでいる。</p>
+<p>ただし、strcpy()はコピーする先のポインタ位置のメモリが確保されているかどうかはチェックしない。ポインタしか渡されてないんだから、チェックのしようが無いとも言える。なので、「strは255文字分の長さがあるんだから、 str1とstr2をくっつけたものが収まるはずだ」という確認はプログラマがやる必要がある。</p>
+<p>つまり、文字列strには2つの長さがある。文字の配列として確保されている要素数という長さと、先頭からヌル文字までという文字列としての長さだ。上のコード例では、strの配列としての要素数、これを容量と呼ぶことにするけど、文字列strの容量は255だ。文字列としての長さは10文字だ。ホントは容量と長さという2つの属性を文字列は管理しなくてはいけない。ヌル終端文字列を使うことによって、長さはヌル文字を見つければわかるようになっているんだけど、容量は文字列とは別にプログラマが管理しなくてはいけない。この2つはちゃんと区別して考えるようにね。</p>
+<p>ちなみに、最近流行の低レイヤー言語であるRustの文字列は、「データ位置のポインタ」「容量」「文字列の長さ」という3つのデータをセットにして「文字列」というものが出来ている。この辺が現代的なシステム言語としてはよい落とし所なんだろうね。</p>
 </div>
 <div class="note">
 </div>
