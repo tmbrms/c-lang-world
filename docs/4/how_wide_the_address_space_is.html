@@ -50,26 +50,27 @@
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
   <style>
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -78,9 +79,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -189,29 +190,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="セグメンテーションフォルト">セグメンテーションフォルト</h2>
 <p>じゃあ、実際に今の環境でポインタを操作してメモリにアクセスするとどうなるのか試して見よう。</p>
 <p>前の章で動かしたプログラムをもう一度見てみるよ。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv){</a>
-<a class="sourceLine" id="cb1-4" title="4">  <span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a>
-<a class="sourceLine" id="cb1-5" title="5">  </a>
-<a class="sourceLine" id="cb1-6" title="6">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</a>
-<a class="sourceLine" id="cb1-7" title="7">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
-<a class="sourceLine" id="cb1-8" title="8">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a>
-<a class="sourceLine" id="cb1-9" title="9"></a>
-<a class="sourceLine" id="cb1-10" title="10">  str = str + <span class="dv">4</span>;</a>
-<a class="sourceLine" id="cb1-11" title="11"></a>
-<a class="sourceLine" id="cb1-12" title="12">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
-<a class="sourceLine" id="cb1-13" title="13">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a>
-<a class="sourceLine" id="cb1-14" title="14"></a>
-<a class="sourceLine" id="cb1-15" title="15">  <span class="dt">char</span> *c = &amp;str;</a>
-<a class="sourceLine" id="cb1-16" title="16">  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">8</span>; i++){</a>
-<a class="sourceLine" id="cb1-17" title="17">    printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *c);</a>
-<a class="sourceLine" id="cb1-18" title="18">    c++;</a>
-<a class="sourceLine" id="cb1-19" title="19">  }</a>
-<a class="sourceLine" id="cb1-20" title="20"></a>
-<a class="sourceLine" id="cb1-21" title="21">}</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv){</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>  <span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>  </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>  str = str + <span class="dv">4</span>;</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>  <span class="dt">char</span> *c = &amp;str;</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a>  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">8</span>; i++){</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a>    printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *c);</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a>    c++;</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a>  }</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a>}</span></code></pre></div>
 <p>この途中でポインタに整数の4を足しているけど、全然違う値を入れるとどうなるだろう。試しに</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" title="1">str = str + <span class="dv">1000000000004</span>;</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>str = str + <span class="dv">1000000000004</span>;</span></code></pre></div>
 <p>に書き直して、実行してみよう。</p>
 <pre><code>ADDRESS: 0x7ffee1523a48
 ADDRESS: 0x10e6dcf96

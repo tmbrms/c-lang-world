@@ -50,26 +50,27 @@
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
   <style>
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -78,9 +79,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -129,7 +130,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>そうだね。だから、Cプログラマは実際には数字をまとめて扱う。 Cプログラマの頭の中には0と1があるのではなく、方眼紙のひとマスひとマスに、0から255までの数字がはいっているところがイメージされている。0から255まで数字は8ビット、つまり0か1の8桁で表される。0から255の数字は16進数で書けば2桁だから、こんな感じだ</p>
 <figure>
-<img src="./memory_map.png" alt="8ビットつまり1バイトの数字がはいる方眼紙" /><figcaption>8ビットつまり1バイトの数字がはいる方眼紙</figcaption>
+<img src="./memory_map.png" alt="8ビットつまり1バイトの数字がはいる方眼紙" /><figcaption aria-hidden="true">8ビットつまり1バイトの数字がはいる方眼紙</figcaption>
 </figure>
 <p>実際には0101010と0と1が並んでいるんだけども、それを人間の方で勝手に8つずつに区切っているわけだ。まあ慣れたプログラマなら16進数を2進数に直すのはすぐだし。全部覚えちゃってるからね。</p>
 <blockquote>
@@ -143,20 +144,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>そして、実はC言語もこの8ビットの単位ごとの箱に番号をつけて管理する。というのも、メモリは1ビットずつ読むわけではなくて、ある程度まとめて読むからだ。ご想像の通り、32bit CPUは32ビットずつ読む。で、8ビットより細かい単位で読むマシンの事は考えなくてもよかろうと C言語を作った時点でなったんだろうね。あまりよく知らないけど。</p>
 <p>というわけで、この8ビット単位の箱に番号つまりアドレスが付くんだ。</p>
 <p>では、実際にメモリにアドレスをが付いている様子を見てみよう。次のプログラムをコンパイルして、実行してみよう。何が書いてあるのかは理解できなくてもいい。ただ、printfが何かを表示する命令で、それ以外は代入と足し算しかないんだから、まったく理解できないって感じでもないだろう。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb1-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv){</a>
-<a class="sourceLine" id="cb1-4" title="4">  <span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a>
-<a class="sourceLine" id="cb1-5" title="5">  </a>
-<a class="sourceLine" id="cb1-6" title="6">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</a>
-<a class="sourceLine" id="cb1-7" title="7">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
-<a class="sourceLine" id="cb1-8" title="8">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a>
-<a class="sourceLine" id="cb1-9" title="9"></a>
-<a class="sourceLine" id="cb1-10" title="10">  str = str + <span class="dv">4</span>;</a>
-<a class="sourceLine" id="cb1-11" title="11"></a>
-<a class="sourceLine" id="cb1-12" title="12">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
-<a class="sourceLine" id="cb1-13" title="13">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a>
-<a class="sourceLine" id="cb1-14" title="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv){</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>  <span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>  </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>  str = str + <span class="dv">4</span>;</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a>  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>}</span></code></pre></div>
 <p>実行結果はこんな感じだ。</p>
 <pre><code>ADDRESS: 0x7ffeea072a58
 ADDRESS: 0x105b8df92
@@ -169,7 +170,7 @@ VALUE: 6b</code></pre>
 <p>なんのことかさっぱりわからないと思うけど、ゆっくり説明するから心配しなくていい。</p>
 <p>先に、メモリマップを出しておこうか。このプログラムを実行すると、ある時点でメモリの内容はこんな感じになっている。</p>
 <figure>
-<img src="./address.png" alt="メモリマップ" /><figcaption>メモリマップ</figcaption>
+<img src="./address.png" alt="メモリマップ" /><figcaption aria-hidden="true">メモリマップ</figcaption>
 </figure>
 <p>広大なメモリのうち、上の段の6バイト、下の段の8バイト、合わせて14バイトに何が入っているのかを表したものだ。上の段と下の段は、メモリのある2カ所を取り出している。 1つは0x105b8df92付近。もうひとつは0x7ffeea072a58付近。両者はかなり桁が違うので、メモリ上のかなり離れた位置にあるってことになる。</p>
 <blockquote>
@@ -184,7 +185,7 @@ VALUE: 6b</code></pre>
 <p>3行目はmain関数の定義だ。ここもJavaとよく似ているよね。 C言語で書いたプログラムは、main関数から実行される約束になっている。</p>
 <p>では、main関数の中身にいこう。</p>
 <p>ここで、新しい<code>*</code>の使い方がでてくる。この<code>*</code>はさっきの間接演算子と関係はあるが、別物だ。アドレスを格納する変数を宣言するときにも<code>*</code>を使うんだ。演算子はそんなにややこしくはないけど、こっちが概念的になかなかややこしい。 main関数の最初の部分を見てみよう。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</span></code></pre></div>
 <p>これは何をやっているのかというと、「char型のポインタstrを宣言して、そこに文字列のアドレスを格納している」という言い方になる。いよいよポインタという言葉がでてきたね。つまり、ポインタとは「アドレスを格納するため変数」だ。</p>
 <p>では、char型のポインタとはどういう意味だろう。</p>
 <p>char型というのは、(英数字)1文字を格納するための整数型だ。英語圏の人はたかだかアルファベットと数字といくつかの記号しか文字が必要じゃなかったので、1文字を8ビットの整数で表すことにした。日本語のことなんか、これっぽっちも考えてなかった時代に作られてるからね。</p>
@@ -197,13 +198,13 @@ VALUE: 6b</code></pre>
 </blockquote>
 <p>最初に書いた<code>char *str</code>の書き方をオススメしておくよ。ただ、<code>char* str</code>と書くのも多く見かけるので、驚かないように。</p>
 <p>さて、</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" title="1"><span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="dt">char</span> *str = <span class="st">&quot;thanks&quot;</span>;</span></code></pre></div>
 <p>と書かれた1行に対して、C言語は何を行うのか見ていこう。</p>
 <p>まず、メモリ内に“thanks”という文字列に当たるバイト列を書き込む。これは0x7468616e6b73という並びになる。 ASCIIコード表を見て確認してみてくれ。これがメモリのどこかに書き込まれるわけだ。代入の右側に文字列リテラルを書くと、その文字列を書き込んだメモリのアドレスが代入の左側に渡る。</p>
 <p>次に、そのアドレスを格納するための変数strのためにメモリを確保する。アドレスは8バイトだからメモリのどこかに 8バイトの空きを見つけて、そこを「ここはstrが使うからね」と閻魔帳にメモっておく。そして、そこに“thanks”が書かれた場所のアドレスを保存する。</p>
 <p>これで、さっき見せたメモリの状態になるんだ。もう一度見ておこうか。</p>
 <figure>
-<img src="./address.png" alt="メモリマップ" /><figcaption>メモリマップ</figcaption>
+<img src="./address.png" alt="メモリマップ" /><figcaption aria-hidden="true">メモリマップ</figcaption>
 </figure>
 <p>アドレス0x105b8df92に0x74が格納されている。これは“thanks”の最初の“t”だ。そこから順に“thanks”が保存されているね。</p>
 <p>そして、0x7ffeea072a58から8バイト続けて 0x92dfb80501000000が保存されている。これは実は“thanks”を格納した場所のアドレス0x105b8df92がバイトごとに逆さまに入っているんだ。わかるかな？</p>
@@ -213,9 +214,9 @@ VALUE: 6b</code></pre>
 <p>それはそういう風にIntelのCPUが作られたからとしか言い様がないな <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>。理由はあるんだろうけど、別にどっち向きに格納していても使う上で問題は無いんだ。今はそういうものだと思っていてくれ。</p>
 <p>というわけで、変数宣言して文字列リテラルを代入しただけだけど、 1行で結構いろいろとやったもんだ。</p>
 <p>プログラムの次の部分を見ていこう。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" title="1">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</a>
-<a class="sourceLine" id="cb5-2" title="2">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
-<a class="sourceLine" id="cb5-3" title="3">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;str);</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</span></code></pre></div>
 <p>対応する実行結果はこうだった</p>
 <pre><code>ADDRESS: 0x7ffeea072a58
 ADDRESS: 0x105b8df92
@@ -233,14 +234,14 @@ VALUE: 74</code></pre>
 <p>「えっ？どこを指してるかわからなくなっちゃいますよ」</p>
 </blockquote>
 <p>そうだ。すごく気をつけて書き換える必要はあるけど、出来ちゃうんだな。プログラムを先に進んでみよう。</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" title="1">  str = str + <span class="dv">4</span>;</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>  str = str + <span class="dv">4</span>;</span></code></pre></div>
 <blockquote>
 <p>「あー、ホントだ。数字足しちゃってる。えええ・・・。これ別に好きな数字足しちゃってもいいんですか？」</p>
 </blockquote>
 <p>別にいいよ。</p>
 <p>ただ、その結果のアドレスが指している先のメモリが何に使われているのか、はたまた何にも使われていないのかは通常、さっぱりわからないわけだから、ただ闇雲に数字を足しても意味は無い。けど、 足そうが引こうがプログラムとしてはエラーにならない。ここでは4を足している。するとどうなるか。その下で確認をしているね。</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" title="1">  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</a>
-<a class="sourceLine" id="cb8-2" title="2">  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>  printf(<span class="st">&quot;ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, str);</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>  printf(<span class="st">&quot;VALUE: %x</span><span class="sc">\n</span><span class="st">&quot;</span>, *str);</span></code></pre></div>
 <p>strの中身が+4されている。そして、その数字をアドレスとしてメモリを参照する、つまり<code>*str</code>してその値を表示すると0x6bになっている。</p>
 <blockquote>
 <p>「足したのに減っちゃいました？」</p>
@@ -269,22 +270,22 @@ VALUE: 74</code></pre>
 <h2 id="データ変換とキャスト">データ変換とキャスト</h2>
 <p>さて、C言語では実際にメモリ上に書かれた0と1のデータそのものを強くイメージしてプログラムできるということはわかったと思う。</p>
 <p>もうひとつ、実例で試して見ようか。浮動小数点型がどのようにメモリ内に格納されているか確認してみよう。</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb9-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span></a>
-<a class="sourceLine" id="cb9-4" title="4"></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv){</a>
-<a class="sourceLine" id="cb9-6" title="6">  <span class="dt">float</span> pi = M_PI;</a>
-<a class="sourceLine" id="cb9-7" title="7"></a>
-<a class="sourceLine" id="cb9-8" title="8">  printf(<span class="st">&quot;pi = %f</span><span class="sc">\n</span><span class="st">&quot;</span>, pi);</a>
-<a class="sourceLine" id="cb9-9" title="9">  printf(<span class="st">&quot;size of float = %lu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span>(pi));</a>
-<a class="sourceLine" id="cb9-10" title="10"></a>
-<a class="sourceLine" id="cb9-11" title="11">  <span class="dt">uint8_t</span> *p = &amp;pi;</a>
-<a class="sourceLine" id="cb9-12" title="12"></a>
-<a class="sourceLine" id="cb9-13" title="13">  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="kw">sizeof</span>(pi); i++){</a>
-<a class="sourceLine" id="cb9-14" title="14">    printf(<span class="st">&quot;|%02x| &quot;</span>, *(p + i));</a>
-<a class="sourceLine" id="cb9-15" title="15">  }</a>
-<a class="sourceLine" id="cb9-16" title="16">}</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv){</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a>  <span class="dt">float</span> pi = M_PI;</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a>  printf(<span class="st">&quot;pi = %f</span><span class="sc">\n</span><span class="st">&quot;</span>, pi);</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true"></a>  printf(<span class="st">&quot;size of float = %lu</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="kw">sizeof</span>(pi));</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true"></a>  <span class="dt">uint8_t</span> *p = &amp;pi;</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true"></a>  <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="kw">sizeof</span>(pi); i++){</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true"></a>    printf(<span class="st">&quot;|%02x| &quot;</span>, *(p + i));</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true"></a>  }</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true"></a>}</span></code></pre></div>
 <p>実行結果はこうなる。</p>
 <pre><code>pi = 3.141593
 size of float = 4
@@ -331,30 +332,30 @@ size of float = 4
 <p>しかし、もちろん0x40490fdbは1078530011という整数を表すこともある。メモリに書いてあるバイト列をどう解釈するかはプログラム次第だ。プログラム言語の特徴をいうときに、型ありとか型なしとか、動的型付けとか静的型付けとかいう。 C言語はもちろん型があって、静的な型付けの言語だ。しかし、それは変数の型の話だ。</p>
 <p>Javaは変数に型があり、Rubyは変数に型がない。しかしどちらの言語でも、オブジェクトには型がある。オブジェクトは自分自身が何の型を表現しているデータか知っている。 Javaのオブジェクトだってメモリ上のどこかにかいてあることは変わらないはずだ。しかし、Javaのオブジェクトはそのデータの中に自分自身がどんな型のオブジェクトかを示す情報を持っているということだ。</p>
 <p>しかし、C言語ではオブジェクトには型がない。 C言語のオブジェクトはメモリ上に書かれたバイト列そのもので、それをどう解釈するかはプログラムに任されている。解釈はそのオブジェクトがどんな型の変数に入っているかに依存する。</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb12-1" title="1"><span class="dt">float</span> pi = M_PI;</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="dt">float</span> pi = M_PI;</span></code></pre></div>
 <p>こう書いた瞬間、piに格納された0x40490fdbは円周率を表す小数だ。しかし、これをなんとかして、int型の変数に格納してしまえば、それはもう1078530011という整数として扱われてしまう。</p>
 <p>試して見よう。</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb13-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
-<a class="sourceLine" id="cb13-2" title="2"><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></a>
-<a class="sourceLine" id="cb13-3" title="3"></a>
-<a class="sourceLine" id="cb13-4" title="4"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv){</a>
-<a class="sourceLine" id="cb13-5" title="5">  <span class="dt">float</span> pi = M_PI;</a>
-<a class="sourceLine" id="cb13-6" title="6"></a>
-<a class="sourceLine" id="cb13-7" title="7">  <span class="dt">int</span> i = pi;</a>
-<a class="sourceLine" id="cb13-8" title="8"></a>
-<a class="sourceLine" id="cb13-9" title="9">  printf(<span class="st">&quot;pi = %f</span><span class="sc">\n</span><span class="st">&quot;</span>, pi);</a>
-<a class="sourceLine" id="cb13-10" title="10">  printf(<span class="st">&quot;i = %d</span><span class="sc">\n</span><span class="st">&quot;</span>, i);</a>
-<a class="sourceLine" id="cb13-11" title="11"></a>
-<a class="sourceLine" id="cb13-12" title="12">  i = *((<span class="dt">int</span>*)&amp;pi);</a>
-<a class="sourceLine" id="cb13-13" title="13">  printf(<span class="st">&quot;i = %d</span><span class="sc">\n</span><span class="st">&quot;</span>, i);</a>
-<a class="sourceLine" id="cb13-14" title="14">}</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv){</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>  <span class="dt">float</span> pi = M_PI;</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>  <span class="dt">int</span> i = pi;</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a>  printf(<span class="st">&quot;pi = %f</span><span class="sc">\n</span><span class="st">&quot;</span>, pi);</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true"></a>  printf(<span class="st">&quot;i = %d</span><span class="sc">\n</span><span class="st">&quot;</span>, i);</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true"></a>  i = *((<span class="dt">int</span>*)&amp;pi);</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true"></a>  printf(<span class="st">&quot;i = %d</span><span class="sc">\n</span><span class="st">&quot;</span>, i);</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true"></a>}</span></code></pre></div>
 <p>実行結果はこうなる。</p>
 <pre><code>pi = 3.141593
 i = 3
 i = 1078530011</code></pre>
 <p>int型のiにfloat型のpiを代入すると、C言語は「小数を整数にいれるんだな」と解釈してくれる。その結果、3.14・・・の整数部である3がiに入る。</p>
 <p>しかし、</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb15-1" title="1">i = *((<span class="dt">int</span>*)&amp;pi);</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>i = *((<span class="dt">int</span>*)&amp;pi);</span></code></pre></div>
 <p>とすると、piに入っているメモリの状態がそのままiに入る。</p>
 <blockquote>
 <p>「括弧と記号ばかりで、目が滑ります・・・」</p>
@@ -392,9 +393,9 @@ i = 1078530011</code></pre>
 </tbody>
 </table>
 <p>この<code>(int*)</code>のように、括弧付きの型名を式に付けることにより、型変換をすることが出来る。これをキャストという。例えば、キャストを使って、整数型と浮動小数点型の間の変換を行うことも出来る。むしろ、普通にキャストというとこっちをイメージするかも知れない。先ほど、</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb16-1" title="1"><span class="dt">int</span> i = pi;</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="dt">int</span> i = pi;</span></code></pre></div>
 <p>の部分で暗黙の型変換が行われて、3.14が3になっていた。これは実際には</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb17-1" title="1"><span class="dt">int</span> i = (<span class="dt">int</span>)pi;</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="dt">int</span> i = (<span class="dt">int</span>)pi;</span></code></pre></div>
 <p>が行われていたということだ。さっきも見たとおり、浮動小数点型の3.14と整数型の3は内部的にはまったく違う形式だ。だから、<code>(int)3.14</code>をするとC言語はいくらかの計算をして3を導いている。</p>
 <p>しかし、ポインタのキャストは意味が違う。 <code>(int*)&amp;pi</code>してもC言語はなんの計算もしない。ただ、そのポインタに格納されているアドレスから値を読み出すときに、そこにあるバイト列をどう解釈するかが変わるだけだ。だって、int型のポインタだろうが、floatのポインタだろうが、ポインタはただのアドレスだからだ。</p>
 <p>キャスト次第でメモリ上の0と1の並びをどう解釈するかを C言語は簡単に変更できる。これがC言語がコンピューターを機械として扱うのが得意ということの1つの面だね。</p>
@@ -417,18 +418,18 @@ i = 1078530011</code></pre>
 </ol>
 <p>まあ、あっても不思議じゃない機械だと思うね。</p>
 <p>さて、イメージとしてこんな感じのコードが考えられると思う。</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb18-1" title="1"><span class="dt">uint32_t</span> marker;</a>
-<a class="sourceLine" id="cb18-2" title="2"></a>
-<a class="sourceLine" id="cb18-3" title="3">marker = get_data();</a>
-<a class="sourceLine" id="cb18-4" title="4"></a>
-<a class="sourceLine" id="cb18-5" title="5"><span class="cf">if</span>(marker == <span class="dv">0</span>){</a>
-<a class="sourceLine" id="cb18-6" title="6">  <span class="dt">uint32_t</span> count = get_data();</a>
-<a class="sourceLine" id="cb18-7" title="7"></a>
-<a class="sourceLine" id="cb18-8" title="8">  <span class="cf">for</span>(<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; count; i++){</a>
-<a class="sourceLine" id="cb18-9" title="9">    <span class="dt">uint32_t</span> data = get_data();</a>
-<a class="sourceLine" id="cb18-10" title="10">    printf(<span class="st">&quot;DATA%d: %f&quot;</span>, i+<span class="dv">1</span>, *((<span class="dt">float</span>*)data));</a>
-<a class="sourceLine" id="cb18-11" title="11">  }</a>
-<a class="sourceLine" id="cb18-12" title="12">}</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="dt">uint32_t</span> marker;</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>marker = get_data();</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a><span class="cf">if</span>(marker == <span class="dv">0</span>){</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a>  <span class="dt">uint32_t</span> count = get_data();</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a>  <span class="cf">for</span>(<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; count; i++){</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a>    <span class="dt">uint32_t</span> data = get_data();</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a>    printf(<span class="st">&quot;DATA%d: %f&quot;</span>, i+<span class="dv">1</span>, *((<span class="dt">float</span>*)data));</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true"></a>  }</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true"></a>}</span></code></pre></div>
 <p>このコードは断片で、このままでは動かない。こんな感じのコードがプログラムのどこかにあるというイメージを持ってくれ。 <code>get_data()</code>は呼び出すとこの装置から 32bit分のデータを読み込む。戻り値の型はuint32_t(符号なし32bit整数)と定義されているとしよう。</p>
 <p>ただし、<code>get_data()</code>から取得したデータは uint32_tと解釈すべきときと、floatと解釈すべきときの 2通りがある。装置とアクセスしたり、ネットワークでデータをやりとりすると、こういうケースはちょいちょいあるんだ。</p>
 <blockquote>
@@ -437,24 +438,24 @@ i = 1078530011</code></pre>
 <p>C言語が得意な世界というのは、そういうものを扱うところだね。</p>
 <p>さて、<code>get_data()</code>で取得したデータは、整数のことも浮動小数点のこともあった。上のコードでは浮動小数点として解釈したいときはキャストしているけど、どうにも見づらいし、<code>get_data()</code>の戻り値は2通りの解釈があるということが、コードを読んでもよくわからない。</p>
 <p>こういう時に使う機能として、C言語には共用体というものがある。</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">typedef</span> <span class="kw">union</span> {</a>
-<a class="sourceLine" id="cb19-2" title="2">  <span class="dt">uint32_t</span> count; <span class="co">// データ個数</span></a>
-<a class="sourceLine" id="cb19-3" title="3">  <span class="dt">float</span> data; <span class="co">// 測定データ</span></a>
-<a class="sourceLine" id="cb19-4" title="4">} DATA_ROW;</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="kw">typedef</span> <span class="kw">union</span> {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a>  <span class="dt">uint32_t</span> count; <span class="co">// データ個数</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a>  <span class="dt">float</span> data; <span class="co">// 測定データ</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a>} DATA_ROW;</span></code></pre></div>
 <p><code>union {型 メンバー名;}</code>とすることで、データをどのような型として解釈するのか定義できる。 <code>typedef</code>は新しい型名を定義する構文で、上のコードは、「新しい型名<code>DATA_ROW</code>は、整数でも浮動小数点でも解釈できるデータだ」という意味だ。 <code>DATA_ROW</code>型の変数<code>a</code>を整数と解釈したければ<code>a.count</code>、浮動小数点と解釈したければ<code>a.data</code>と記述する。一見、Javaのクラスのメンバーみたいに見えるが、 <code>a.count</code>も<code>a.data</code>も実体は同じ。2つの型を記録するのにメモリを共用しているので、共用体と言う。</p>
 <p>それではさっきのコードが、<code>DATA_ROW</code>型を使うとどう書き直せるのか見てみよう。今や<code>get_data()</code>は<code>DATA_ROW</code>を返す関数だ。</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb20-1" title="1">DATA_ROW marker;</a>
-<a class="sourceLine" id="cb20-2" title="2"></a>
-<a class="sourceLine" id="cb20-3" title="3">marker = get_data();</a>
-<a class="sourceLine" id="cb20-4" title="4"></a>
-<a class="sourceLine" id="cb20-5" title="5"><span class="cf">if</span>(marker.count == <span class="dv">0</span>){</a>
-<a class="sourceLine" id="cb20-6" title="6">  DATA_ROW c = get_data();</a>
-<a class="sourceLine" id="cb20-7" title="7"></a>
-<a class="sourceLine" id="cb20-8" title="8">  <span class="cf">for</span>(<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; c.count; i++){</a>
-<a class="sourceLine" id="cb20-9" title="9">    DATA_ROW d = get_data();</a>
-<a class="sourceLine" id="cb20-10" title="10">    printf(<span class="st">&quot;DATA%d: %f&quot;</span>, i+<span class="dv">1</span>, d.data));</a>
-<a class="sourceLine" id="cb20-11" title="11">  }</a>
-<a class="sourceLine" id="cb20-12" title="12">}</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a>DATA_ROW marker;</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a>marker = get_data();</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a><span class="cf">if</span>(marker.count == <span class="dv">0</span>){</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a>  DATA_ROW c = get_data();</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a>  <span class="cf">for</span>(<span class="dt">uint32_t</span> i = <span class="dv">0</span>; i &lt; c.count; i++){</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a>    DATA_ROW d = get_data();</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true"></a>    printf(<span class="st">&quot;DATA%d: %f&quot;</span>, i+<span class="dv">1</span>, d.data));</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true"></a>  }</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true"></a>}</span></code></pre></div>
 <blockquote>
 <p>「キャストがないだけでだいぶ普通のプログラムっぽいです！」</p>
 </blockquote>
@@ -462,8 +463,8 @@ i = 1078530011</code></pre>
 <section class="footnotes" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>このような並べ方をリトルエンディアンという<a href="#fnref1" class="footnote-back" role="doc-backlink">↩</a></p></li>
-<li id="fn2" role="doc-endnote"><p>それぞれセグメントアドレス、オフセットアドレスと呼ぶ<a href="#fnref2" class="footnote-back" role="doc-backlink">↩</a></p></li>
+<li id="fn1" role="doc-endnote"><p>このような並べ方をリトルエンディアンという<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>それぞれセグメントアドレス、オフセットアドレスと呼ぶ<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 </div>
