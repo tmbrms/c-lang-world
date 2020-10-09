@@ -25,7 +25,7 @@
     * パスカル文字列
     * 長さと容量
     * バッファオーバーラン
-* スタックとヒープ
+* [スタックとヒープ](https://tmbrms.github.io/c-lang-world/6/stack_and_heap.html)
     * malloc
     * なぜローカル変数はFreeしなくてもいいのか
     * 関数呼び出しとは何か
