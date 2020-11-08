@@ -138,30 +138,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <p>できないね。</p>
 <p>うん。今までの話をちゃんと理解していれば、当然出てくる疑問だ。</p>
-<p>本題に入る前に、言っておこう。テキストエディタは読み込んだファイルを大きな1つの文字列に保存するわけではない。そんなことしたら、途中の文字を削除したときに、末尾の文字まで延々ひとつずつずらすことになりかねない。配列はメモリ上に連続して入ってなければならないからね。いろいろなやり方があると思うけど、典型的には、各行ごとの文字列を作って、それをリストにしているんだと思う。</p>
+<p>本題に入る前に、言っておこう。テキストエディタは読み込んだファイルを大きな1つの文字列に保存するわけではない。そんなことしたら、途中の文字を削除したときに、末尾の文字まで延々ひとつずつずらすことになりかねない。配列はメモリ上に連続して入ってなければならないからね。いろいろなやり方があると思うけど、素朴なやりかたとしては、各行ごとの文字列を作って、それをリストにする方法が考えられる。</p>
 <p>ここでいうリストというのは、日常的に使う用語としてのリストではなく、データ構造の名前としてのリストだ。リストにもいくつかの種類がある。例えば、JavaのAPIにはjava.util.ArrayListとjava.util.LinkedListがある。どちらもリストという名前だけど、種類が違うので用途によって使い分けるべきだ。何にも考えずにArrayListを使ってる人も多そうだけど、実は単に「リスト」と呼んだときにデータ構造を学んだプログラマの頭に思い浮かぶものに近いのはLinkedListだったりする。</p>
 <blockquote>
 <p>「・・・そもそもLinkedListの存在を知りませんでした」</p>
 </blockquote>
 <p>まあ、そういう人は一定数いると思う。</p>
-<p>今回はデータ構造の説明はしないけど、アルゴリズムとデータ構造はコンピューターサイエンスの基礎の基礎だ。プログラムはプログラミング言語を習得すれば書けるようになると誤解している人が多いし、プログラミング言語を習得する中で学んでいくことも多いと思うけど、ある程度、プログラムを書くことに慣れたら、ぜひ、アルゴリズムとデータ構造の本にチャレンジしてみて欲しい。そして、そういう基礎を学ぶときにC言語の知識はそのとききっと役に立つはずだ。</p>
+<p>今回はデータ構造の説明はしないけど、アルゴリズムとデータ構造はコンピューターサイエンスの基礎の基礎だ。プログラムはプログラミング言語を習得すれば書けるようになると誤解している人が多いし、プログラミング言語を習得する中で並行してアルゴリズムも学んでいくことも多いと思う。だけど、ある程度、プログラムを書くことに慣れたら、ぜひ、アルゴリズムとデータ構造の本にチャレンジしてみて欲しい。そして、そういう基礎を学ぶときにここまで語ってきた「機械としてのコンピュータの世界」の知識はきっと役に立つはずだ。</p>
 <p>さて、それはともかくだ。プログラムを作っていたら、実行時にしかサイズが分からない配列を作りたいことはある。つまり、動的にサイズが決まる配列だ。もちろん、C言語でも動的にサイズが決まる配列を作ることが出来る。</p>
 <p>・・・というか、必要なだけのメモリを取得することが出来る。そのメモリ領域を配列だと考えてアクセスするのはプログラマの自由だ。メモリを取得するには、mallocを使う。</p>
 <blockquote>
 <p>「まろっく？」</p>
 </blockquote>
-<p>読み方までは知らないな。Memory を ALLCate するんだから、「えむあろっく」かも？</p>
+<p>読み方までは知らないな。決まっているのかな？ Memory を ALLOCate するんだから、「えむあろっく」かも？</p>
 <p>さて、使い方はこんな感じだ。</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="dt">int</span> *ary = malloc(<span class="kw">sizeof</span>(<span class="dt">int</span>) * <span class="dv">1000</span>)</span></code></pre></div>
-<p>こうすると、intのサイズが1000個分のメモリ領域が確保されて、そのアドレスが返ってくる。以前説明したとおり、配列の記法<code>ary[i]</code>は<code>&amp;(ary + i)</code>とまったく同じモノなので、 aryを配列だと思ってプログラムを書いてまったく問題ない。</p>
+<p>こうすると、intのサイズの1000個分のメモリ領域が確保されて、その先頭のアドレスが返ってくる。以前説明したとおり、配列の記法<code>ary[i]</code>は<code>&amp;(ary + i)</code>とまったく同じモノなので、 aryを配列だと思ってプログラムを書いてまったく問題ない。</p>
 <p>ただし、3つ注意点がある。</p>
-<p>まず、mallocは空いたメモリを見つけてそこを確保してくれるが、そのメモリ上に何が書いてあるかは気にしない。必要があれば、そこを全部0で埋めるなどの初期化が必要になる。つまり、上の例で言えば、いきなり<code>ary[555]</code>を読むことができるけど、何が返ってくるかは分からない。間違っても0が書いてあることを前提としたコードを書いてはいけない。</p>
-<p>2つ目は領域外へのアクセスだ。先頭アドレスが入ったポインタだけしかないわけだから、サイズは別途管理すること。確保した領域外を読んだり書いたりすると不幸が起きる。配列を関数の引数で渡したときと似た話だね。</p>
-<p>最後に、mallocで確保した領域は、要らなくなったら明示的に解放しなければならない。解放はfree関数にポインタを渡せば良い。 mallocしてfreeし忘れるというのは、典型的なバグだ。そうすると何が起きるかというと、プログラムを動かしている間に使っているメモリ量がどんどん増えていく一方になる。いわゆる「メモリリーク」で、最終的にはシステムのメモリを食い潰してしまう。</p>
+<p>まず、mallocは空いたメモリを見つけてそこを確保してくれるが、そのメモリ上に何が書いてあるかは気にしない。必要があれば、そこを全部0で埋めるなどの初期化が必要になる。つまり、上の例で言えば、いきなり<code>ary[555]</code>を読むことができるけど、何が返ってくるかは分からない。間違っても0が書いてあることを前提としたコードを書いてはいけない。初期化の方法は割愛する。普通のC言語の教科書を見て欲しい(笑)。</p>
+<p>2つ目は領域外へのアクセスだ。先頭アドレスが入ったポインタは貰えるが、サイズは自分で指定したんだから、自分で別途管理すること。確保した領域外を読んだり書いたりすると不幸が起きる。配列を関数の引数で渡したときと似た話だね。</p>
+<p>最後に、mallocで確保した領域は、要らなくなったら明示的に解放しなければならない。解放はfree関数にポインタを渡せば良い。 mallocした領域をfreeし忘れるというのは、典型的なバグだ。そうすると何が起きるかというと、プログラムを動かしている間に使っているメモリ量がどんどん増えていく一方になる。いわゆる「メモリリーク」で、最終的にはシステムのメモリを食い潰してしまう可能性がある。</p>
 <p>こんなところかな。</p>
 <h2 id="なぜローカル変数はfreeしなくてもよいのか">なぜローカル変数はFreeしなくてもよいのか</h2>
 <blockquote>
-<p>「つまり、プログラムを書いているときに『ここでメモリが使いたい。データを取っておきたい』と思ったら変数を宣言すればそこにデータを入れられる。でも、もう動かしている時に『書いていた時にはどれだけ必要かわからなかったけど、今はわかったからそれだけメモリが欲しい』となるなら、そのときにmalloc()するようなプログラムを書いておけということ・・・？」</p>
+<p>「つまり、プログラムを書いているときに『ここでメモリが使いたい。データを取っておきたい』と思ったら変数を宣言すればそこにデータを入れられるだけのメモリが確保される。でも、もう動かしている時に『書いていた時にはどれだけ必要かわからなかったけど、今はわかったからそれだけメモリが欲しい』となるなら、そのときに必要な量をmallocするようなプログラムを書いておけということ・・・？」</p>
 </blockquote>
 <p>それであってるよ。</p>
 <blockquote>
@@ -171,34 +171,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <p>「ちなみに、『メモリをください』というのが私の書いたプログラムだとして、メモリをくれるのは誰ですか？」</p>
 </blockquote>
-<p>オペレーションシステム(OS)だ。OSがメモリーを管理している。</p>
+<p>オペレーティングシステム(OS)だ。OSがメモリーを管理している。</p>
 <blockquote>
 <p>「でも、OSもプログラムですよね？OSは誰からメモリを貰うんですか？」</p>
 </blockquote>
-<p>誰からも。OSにとってハードウェアに積まれているメモリは全部自分のものだ。誰に断ることもなく、勝手にどのアドレスでも使っていい。もちろん、現代のCPUやコンピューターにはハードウェアにメモリ管理のための仕組みがあるので、OSはメモリ管理にそれを使って楽をする。以前にインテルのCPUのプロテクトモードの話をしたよね。だけども、非常にプリミティブに言えば、OSは勝手にどこでもつかっていいし、逆に言えばどこを使っているかは自分で管理しなきゃいけない。さらに、OSの管理下で動いているプログラムにどのメモリを貸し出しているか全部コントロールしなきゃいけない。OSさんは大変なお仕事だ。</p>
+<p>誰からも。OSにとってハードウェアに積まれているメモリは全部自分のものだ。誰に断ることもなく、勝手にどのアドレスでも使っていい。もちろん、現代のCPUやコンピューターにはハードウェアにメモリ管理のための仕組みがあるので、 OSはメモリ管理にそれを使って楽をする。以前にインテルのCPUのプロテクトモードの話をしたよね。そういうものを使うんだったら、その仕組みに従う必要はある。</p>
+<p>だけども、非常にプリミティブなコンピュータを考えれば、 OSは勝手にどこでもつかっていいし、逆に言えばどこを使っているかは自分で管理しなきゃいけない。さらに、OSの管理下で動いているどのプログラムにどのメモリメモリを貸し出しているか全部コントロールしなきゃいけない。OSさんは大変なお仕事だ。</p>
 <blockquote>
 <p>「感謝ですね!」</p>
 </blockquote>
-<p>もちろん、OSごとにメモリを要求する命令は違うかもしれない。しかし、C言語でmalloc()と書けば、コンパイルしたプログラムでは各OSごとのメモリ要求命令に変換される。メモリという実体はそのまま扱っているけど、メモリ要求という手続きは抽象化して、プログラムの移植性を高めているんだね。これがもっと高級な言語なら、確保したメモリのポインタとサイズというメモリの実体そのものじゃなくて、例えば「オブジェクト」のようなもっと抽象的なものが貰える。このあたりがC言語っぽいところだ。</p>
+<p>もちろん、OSごとにメモリを要求する命令は違うかもしれない。しかし、C言語でmallocと書けば、コンパイルしたプログラムでは各OSごとのメモリ要求命令に変換される。メモリという実体はそのまま扱っているけど、メモリ要求という手続きは抽象化して、プログラムの移植性を高めているんだね。これがもっと高級な言語なら、確保したメモリのポインタとサイズというメモリの実体そのものじゃなくて、例えば「オブジェクト」のようなもっと抽象的なものが貰える。このあたりがC言語っぽさが良く出ているところだ。</p>
 <blockquote>
 <p>「なんとなくC言語っぽいレベル感がわかってきました」</p>
 </blockquote>
-<p>そして、OSにとって、概してmalloc()は面倒な処理だ。まず、空いているメモリを探さなきゃいけない。見つけたらそこを使用済みとして管理台帳に載せなければならない。細切れの使用済み領域がたくさん出来たら新しいメモリ要求に応えられないかも知れないから、ときどき区画整理をしないといけないかも知れない。そして、それを全てのプログラム相手にやらなければならない。</p>
-<p>なので、ここは工夫のしどころだ。例えば、OSがあらかじめ使いそうな量を確保しておいてくれるかもしれない。コンパイラが複数回のmalloc()を裏でまとめて一回で済むようなプログラムに最適化してくれるかもしれない。プログラマの方で大きめに要求して自分で小さくちぎって使うように気を遣ってるなんて、優しいプログラマもいるだろう。とにかく、巨大なメモリ要求や、少量ずつの大量のメモリ要求を処理するのは大変なので、みんなが頑張ってる。なので、malloc()したら裏でいろんなことが起きているかもしれない。でも、まあ、使う方の理想は、アドレスをただありがとうといって使うだけだ。malloc()に伴うパフォーマンスの影響を考えるのは、もっとCプログラマとして経験を積んでからでいい。ただ、malloc()はそれなりにコストが高い処理で、裏で工夫もされているから毎回ホントにメモリを探して、予約して・・・という全部のプロセスがちまちまされているとは限らないということは覚えておいて欲しい。いざ、プログラムが遅くて、malloc()に時間がかかってることがわかって困ったら思い出してね。</p>
+<p>そして、OSにとって、概してmallocは面倒な処理だ。まず、空いているメモリを探さなきゃいけない。見つけたらそこを使用済みとして管理台帳に載せなければならない。細切れの使用済み領域がたくさん出来たら新しいメモリ要求に応えられないかも知れないから、ときどき区画整理をしないといけないかも知れない。そして、それを全てのプログラム相手にやらなければならない。</p>
+<p>なので、ここは工夫のしどころだ。例えば、OSはあらかじめ使いそうな量を確保しておいたほうが良いかもしれない。コンパイラが複数回のmallocを裏でまとめて一回で済むようなプログラムに最適化してするべきかもしれない。プログラマの方で大きめに要求して自分で小さくちぎって使うように気を遣ってるなんて、優しいプログラマもいるだろう。とにかく、巨大なメモリ要求や、少量ずつの大量のメモリ要求を処理するのは大変なので、みんなが頑張ってる。</p>
+<p>なので、現代の最適化されたコンピュータとOSの世界では、 mallocしたら裏でいろんなことが起きている可能性が高い。でも、まあ、C言語でプログラムを書く立場としての理想は、 mallocして貰えたアドレスをただありがとうといって使うだけだよね。 mallocに伴うパフォーマンスの影響を考えるのは、もっとCプログラマとして経験を積んでからでいい。ただ、mallocはそれなりにコストが高い処理で、裏で工夫もされているから毎回ホントにメモリを探して、予約して・・・という全部のプロセスがちまちまされているとは限らないということは覚えておいて欲しい。いざ、プログラムが遅くて、mallocに時間がかかってることがわかって困ったら思い出してね。</p>
 <blockquote>
 <p>「感謝する心が深まりました。そうかー、私が変数を宣言してデータを入れる度に、OSさんは裏でメモリを用意してくれてたんですね。ありがたや、ありがたや」</p>
 </blockquote>
-<p>いや、malloc()したときだけだよ。ローカル変数を使う時には、OSはいちいちメモリをくれたりしない。</p>
+<p>いや、mallocしたときだけだよ。ローカル変数を使う時には、OSはいちいちメモリをくれたりしない。</p>
 <blockquote>
-<p>「ふぁ！？」</p>
+<p>「あれっ！？」</p>
 </blockquote>
-<p>だって、ローカル変数はfree()しないだろう？</p>
+<p>だって、ローカル変数はfreeしないだろう？</p>
 <blockquote>
 <p>「それは・・・関数の最後に自動的にしてくれるんじゃないんですか？」</p>
 </blockquote>
-<p>なるほど・・・そうだね。そういう仕組みにすることは可能だ。でも、さっきも言ったとおりmalloc()やfree()はそれなりにコストがかかる処理だから、たくさん使われるローカル変数では使わない。ローカル変数はメモリの中の「スタック領域」を使う。ちなみに、malloc()したらメモリが取られる領域は「ヒープ領域」だ。この2つはアドレス空間の全然違う位置にある。</p>
+<p>なるほど・・・そうだね。そういう仕組みにすることは可能だ。でも、さっきも言ったとおりmallocやfreeはそれなりにコストがかかる処理だから、たくさん使われるローカル変数では使わない。ローカル変数はメモリの中の「スタック領域」を使う。ちなみに、mallocしたらメモリが取られる領域は「ヒープ領域」だ。この2つはアドレス空間の全然違う位置にある。</p>
 <p>おおざっぱに仕組みを説明しよう。まず、プログラムを実行する際には、あらかじめメモリの中に「スタック領域」としてある程度のメモリが確保される。そのスタック領域の先頭のアドレスをあらかじめどこかに控えておく。関数が実行されて次々にローカル変数が宣言されると、そのスタック領域の端っこから順にローカル変数に割り当てられる。すでに確保済みの領域なので、OSへのメモリ要求は発生せずに素早く変数にメモリを割り当てることが出来る。今、使用済みの位置はどのアドレスまでかをどこかに書いておけば、次のローカル変数の割り当てはそこから始めれば良い。</p>
-<p>ここで理解しておかなければならないのは、関数の実行中に2つのアドレスを管理しておかなければならないことだ。スタック領域の先頭のアドレスと、今どこまで割り当て済みかを表すアドレスの2つだ。スタック領域の先頭のアドレスは関数の実行中には変化しない。割り当て済みを表すアドレスはずっと増えていく。ここまではいいかな？</p>
+<p>ここで理解しておかなければならないのは、関数の実行中に 2つのアドレスを管理しておかなければならないことだ。スタック領域の先頭のアドレスと、今どこまで割り当て済みかを表すアドレスの2つだ。スタック領域の先頭のアドレスは関数の実行中には変化しない。割り当て済みを表すアドレスはずっと増えていく。ここまではいいかな？</p>
 <blockquote>
 <p>「はい。使っている領域の先頭と末尾のアドレスを持っておく。わかります」</p>
 </blockquote>
@@ -210,8 +212,374 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <p>「簡単ですけど・・・何が嬉しいのかよくわかりません」</p>
 </blockquote>
-<p>そうだね。そもそもなぜ「スタック」という名前なのかもわからないね。スタックもリストと同じように基本的なデータ構造の名前なんだけど、そもそもは「積み重ねる」という意味だ。</p>
+<p>そうだね。そもそもなぜ「スタック」という名前なのかもわからないね。スタックもリストと同じように基本的なデータ構造の名前なんだけど、そもそもは「積み重ねる」という意味だ。じゃあ、何が積み重ねられるのか。それは、関数だ。</p>
 <h2 id="関数呼び出しとは何か">関数呼び出しとは何か</h2>
+<p>スタック領域の使われ方を理解するために、また、メモリマップを作ってみよう。ちょっと長いが、以下のソースコードをゆっくり眺めてみて欲しい。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="co">// グローバル変数</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="dt">int</span> g1 = <span class="dv">0</span>;</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="dt">int</span> g2 = <span class="dv">0</span>;</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="co">// 関数の定義前にmainから使っているので、先に宣言だけしておかなければならない</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a><span class="dt">int</span>* f1(<span class="dt">int</span> f1_a1, <span class="dt">int</span> f1_a2);</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a><span class="dt">void</span> f2(<span class="dt">int</span> f2_a1, <span class="dt">int</span> f2_a2);</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a>{</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>  <span class="co">// ローカル変数</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a>  <span class="dt">int</span> main_i1 = <span class="dv">0</span>;</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a>  <span class="dt">int</span> main_i2 = <span class="dv">0</span>;</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a>  <span class="co">// ローカル変数に文字列リテラルのアドレスを格納</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a>  <span class="dt">char</span> *main_s = <span class="st">&quot;Hallo!&quot;</span>;</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a>  <span class="co">// 動的なメモリを確保</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true"></a>  <span class="dt">int</span> *main_i3 = malloc(<span class="kw">sizeof</span>(<span class="dt">int</span>));</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true"></a>  <span class="co">// 関数の引数のアドレスを表示</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true"></a>  printf(<span class="st">&quot;main_i1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;main_i1);</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true"></a>  printf(<span class="st">&quot;main_i2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;main_i2);</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true"></a>  <span class="co">// ローカル変数のアドレスを表示</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true"></a>  printf(<span class="st">&quot;main_s ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;main_s);</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true"></a>  <span class="co">// グローバル変数のアドレスを表示</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true"></a>  printf(<span class="st">&quot;g1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;g1);</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true"></a>  printf(<span class="st">&quot;g2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, &amp;g2);</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true"></a>  <span class="co">// 文字列リテラルのアドレスを表示</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true"></a>  printf(<span class="st">&quot;String Literal ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, main_s);</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true"></a>  <span class="co">// 動的に確保したメモリ領域のアドレスを表示</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true"></a>  printf(<span class="st">&quot;main_i3 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, main_i3);</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true"></a>  <span class="co">// 1回目のf1の実行</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true"></a>  <span class="dt">int</span> *f1_i1_1 = f1(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true"></a>  <span class="co">// 2回目のf1の実行。g2は初期化し直しておく。</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true"></a>  g2 = <span class="dv">0</span>;</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true"></a>  <span class="dt">int</span> *f1_i1_2 = f1(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true"></a>  <span class="co">// このアドレスはもう使ってはいけない</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true"></a>  printf(<span class="st">&quot;f1_i1_1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, f1_i1_1);</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true"></a>  printf(<span class="st">&quot;f1_i1_2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, f1_i1_2);</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true"></a>}</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true"></a><span class="dt">int</span>* f1(<span class="dt">int</span> f1_a1, <span class="dt">int</span> f1_a2)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true"></a>{</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true"></a>  <span class="dt">int</span> f1_i1 = <span class="dv">0</span>;</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true"></a>  <span class="dt">int</span> f1_i2 = <span class="dv">0</span>;</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true"></a>  <span class="co">// 何度目のf1の実行かをg1で記録する</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true"></a>  g1++;</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true"></a>  <span class="co">// 関数の引数のアドレスを表示</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d] f1_a1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, &amp;f1_a1);</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d] f1_a2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, &amp;f1_a2);</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true"></a></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true"></a>  <span class="co">// ローカル変数のアドレスを表示</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d] f1_i1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, &amp;f1_i1);</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d] f1_i2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, &amp;f1_i2);</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true"></a>  f2(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true"></a></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true"></a>  <span class="co">// ローカル変数のアドレスを呼び出し元に返す。これはやってはいけない！</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true"></a>  <span class="cf">return</span> &amp;f1_i1;</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true"></a>}</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true"></a><span class="dt">void</span> f2(<span class="dt">int</span> f2_a1, <span class="dt">int</span> f2_a2)</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true"></a>{</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true"></a>  <span class="dt">int</span> f2_i1 = <span class="dv">0</span>;</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true"></a>  <span class="dt">int</span> f2_i2 = <span class="dv">0</span>;</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true"></a></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true"></a>  <span class="co">// 何度目のf2の実行かをg2で記録する</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true"></a>  g2++;</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true"></a>  <span class="co">// 関数の引数のアドレスを表示</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d-%d] f2_a1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, g2, &amp;f2_a1);</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d-%d] f2_a2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, g2, &amp;f2_a2);</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true"></a></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true"></a>  <span class="co">// ローカル変数のアドレスを表示</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d-%d] f2_i1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, g2, &amp;f2_i1);</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true"></a>  printf(<span class="st">&quot;[%d-%d] f2_i2 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, g1, g2, &amp;f2_i2);</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true"></a>  <span class="co">// f2は自分自身を呼び出す(再帰呼び出し)。</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true"></a>  <span class="co">// 2回呼び出されるようにg2でコントロールする</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true"></a>  <span class="cf">if</span>(g2 &lt; <span class="dv">2</span>){</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true"></a>    f2(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true"></a>  }</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true"></a>}</span></code></pre></div>
+<blockquote>
+<p>「な、長い・・・」</p>
+</blockquote>
+<p>プログラムとしては意味のあることはほとんど何もしてない。 main関数からf1関数を呼び出し、f1関数からf2関数を呼び出し、さらにもう一度f2関数からf2関数自身を呼び出している。さらに、もう一度mainからf1を呼び出している。それだけ。</p>
+<p>prrintf文と動作に関係しない変数、コメントをすべて取り除くと以下になる。ホントに何もしていないことがわかると思う。単に、関数が呼び出されているだけ。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="dt">int</span> g1 = <span class="dv">0</span>;</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="dt">int</span> g2 = <span class="dv">0</span>;</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="dt">int</span>* f1(<span class="dt">int</span> f1_a1, <span class="dt">int</span> f1_a2);</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="dt">void</span> f2(<span class="dt">int</span> f2_a1, <span class="dt">int</span> f2_a2);</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>{</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>  <span class="dt">int</span> *f1_i1_1 = f1(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>  g2 = <span class="dv">0</span>;</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>  <span class="dt">int</span> *f1_i1_2 = f1(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>}</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="dt">int</span>* f1(<span class="dt">int</span> f1_a1, <span class="dt">int</span> f1_a2)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>{</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>  <span class="dt">int</span> f1_i1 = <span class="dv">0</span>;</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a>  g1++;</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a>  f2(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a>  <span class="cf">return</span> &amp;f1_i1;</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a>}</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a><span class="dt">void</span> f2(<span class="dt">int</span> f2_a1, <span class="dt">int</span> f2_a2)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a>{</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a>  g2++;</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a>  <span class="cf">if</span>(g2 &lt; <span class="dv">2</span>){</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a>    f2(<span class="dv">0</span>, <span class="dv">0</span>);</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a>  }</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true"></a>}</span></code></pre></div>
+<blockquote>
+<p>「あ、短い。何をしたいのかはわからないですけど、何をしてるのかはわかります」</p>
+</blockquote>
+<p>何をしたいのかは、単純だ。関数の呼び出しをして、そのとき関数の中のローカル変数のアドレスがメモリのどこにあるかについて調べたいだけだから。 mainからf1が2度呼び出されることと、 f1から呼び出されたf2から、もう一回だけf2が呼び出されることだけ注意しておいて欲しい。</p>
+<p>さて、元のコードにはいろんなprintf文が仕掛けてあるが、どれも変数のアドレスを出力している。どの関数からでも呼び出せるグローバル変数のアドレス、各関数のローカル変数のアドレスそしてmallocして得たヒープ領域のアドレス。それらがメモリ上のどの当たりにあるか、確認してみよう。</p>
+<p>実行結果はこうなる。もちろん、アドレスは例によって実行環境によってことなる。これはmacOS上の64bit環境での実行結果だ。アドレスの具体的な値は、実行する度にも変わる。</p>
+<pre><code>main_i1 ADDRESS: 0x7ffee5f1777c
+main_i2 ADDRESS: 0x7ffee5f17778
+main_s ADDRESS: 0x7ffee5f17770
+g1 ADDRESS: 0x109cf0018
+g2 ADDRESS: 0x109cf001c
+String Literal ADDRESS: 0x109cebe2c
+main_i3 ADDRESS: 0x7fb837405950
+[1] f1_a1 ADDRESS: 0x7ffee5f1771c
+[1] f1_a2 ADDRESS: 0x7ffee5f17718
+[1] f1_i1 ADDRESS: 0x7ffee5f17714
+[1] f1_i2 ADDRESS: 0x7ffee5f17710
+[1-1] f2_a1 ADDRESS: 0x7ffee5f176ec
+[1-1] f2_a2 ADDRESS: 0x7ffee5f176e8
+[1-1] f2_i1 ADDRESS: 0x7ffee5f176e4
+[1-1] f2_i2 ADDRESS: 0x7ffee5f176e0
+[1-2] f2_a1 ADDRESS: 0x7ffee5f176bc
+[1-2] f2_a2 ADDRESS: 0x7ffee5f176b8
+[1-2] f2_i1 ADDRESS: 0x7ffee5f176b4
+[1-2] f2_i2 ADDRESS: 0x7ffee5f176b0
+[2] f1_a1 ADDRESS: 0x7ffee5f1771c
+[2] f1_a2 ADDRESS: 0x7ffee5f17718
+[2] f1_i1 ADDRESS: 0x7ffee5f17714
+[2] f1_i2 ADDRESS: 0x7ffee5f17710
+[2-1] f2_a1 ADDRESS: 0x7ffee5f176ec
+[2-1] f2_a2 ADDRESS: 0x7ffee5f176e8
+[2-1] f2_i1 ADDRESS: 0x7ffee5f176e4
+[2-1] f2_i2 ADDRESS: 0x7ffee5f176e0
+[2-2] f2_a1 ADDRESS: 0x7ffee5f176bc
+[2-2] f2_a2 ADDRESS: 0x7ffee5f176b8
+[2-2] f2_i1 ADDRESS: 0x7ffee5f176b4
+[2-2] f2_i2 ADDRESS: 0x7ffee5f176b0
+f1_i1_1 ADDRESS: 0x7ffee5f17714
+f1_i1_2 ADDRESS: 0x7ffee5f17714</code></pre>
+<p>アドレスの桁数が大きいし、16進数だからわかりづらいかもしれないが、だいたい3つの領域に分かれていることがわかるだろう。</p>
+<ol type="1">
+<li>データ領域:0x000109ce0001〜0x000109cf0020付近</li>
+<li>ヒープ領域:0x7fb837405950付近</li>
+<li>スタック領域:0x7ffee5f176b0〜0x7ffee5f17780付近</li>
+</ol>
+<p>グローバル変数や文字列リテラルは、プログラムの開始時にメモリ上に確保されて、プログラムが終わるまで解放されることは無い。この領域をデータ領域という。かなりアドレスの値が小さい、つまりメモリの端の方にある。</p>
+<p>ここからかなりアドレスとしては離れた位置に、ヒープ領域とスタック領域がある。ヒープは前にも言ったとおり、mallocした時に使われる領域だ。そして、関数の引数とローカル変数がスタック領域に割り当てられていることがわかる。</p>
+<p>一番大きなアドレス値を持っているのが、main関数のmain_i1変数だ。そこから、新しい変数が宣言される度にアドレスが小さくなっている。つまり、スタック領域はアドレスが小さくなる方向へ順に使われて行くんだね。</p>
+<p>図にしてみると、こうだ。</p>
+<figure>
+<img src="./ch6_1.png" alt="メモリモデル" /><figcaption aria-hidden="true">メモリモデル</figcaption>
+</figure>
+<blockquote>
+<p>「なるほど、積み重なっていますね！」</p>
+</blockquote>
+<p>スタック領域の使い方は説明したね。</p>
+<p>スタック領域の先頭のアドレスと、割り当て済みの末尾のアドレスの 2つを使って領域を使って行く。ローカル変数を作る度に、割り当て済みの末尾のアドレスだけが移動していく。</p>
+<p>それでは、main関数からf1関数が呼び出されるときには何が起こるだろうか。まず、main関数は自分が使うローカル変数をすべて割り当てる。</p>
+<p>その後、今の先頭のアドレスをどこか別のところに保存しておく。今度は末尾のアドレスを先頭のアドレスへコピーする。</p>
+<blockquote>
+<p>「おおっ？関数が終了したときは、先頭を末尾にコピーしましたけど、今度はその逆ってことですか？」</p>
+</blockquote>
+<p>そう。新しい関数を始めるんだからね。</p>
+<p>これで先頭と末尾が一致した状態だから、ここから新しくローカル変数を割り当てていく。まずは、関数への引数を保存していく。つまり、関数呼び出しのときに引数で値を渡すというのは、スタック領域の新しい関数の為の場所(これをスタックフレームと呼ぶ)に引数の値を書き込んでおくということなんだ。そうしておいて、main関数はf1関数に先頭と末尾をのアドレスを引き継ぐ。 f1関数にとって、そこには既に引数がセットされた状態になっているから、末尾アドレスから自分のローカル関数の為に使って行く。</p>
+<p>そういう仕組みで、スタック領域に関数の引数とローカル変数が順に並んで積み上がっていく。関数呼び出しの時には、引数を「渡して」いるように思えるから、メモリ上のどこかからどこかにデータがコピーされているような感じがするかもしれない。確かにデータはコピーされているんだけど、処理としてはスタック領域の続きにどんどん書いていってるだけだ。</p>
+<p>そして、f1からf2を呼び出すときも同じように、f1の続きの領域にf2への引数を書いて、そこからがf2の領域として使われていく。 f2からf2自身を呼び出すときも、当然呼び出し元と呼び出し先のローカル変数は別々に確保されている。ちょっと考えると呼び出された分だけ同じものを複数管理しなければならないような気がするかも知れない。でも、こうやって関数呼び出しが起きる度に先にどんどん書いていくだけだから、呼び出された関数ごとにローカル変数が別々に確保されているのは当たり前なんだ。</p>
+<p>そして、呼び出された関数が終わったら、末尾のアドレスに先頭のアドレスをコピーする。それで、その関数の領域の開放は終わり。次に関数呼び出しが起きたらついさっきまで使ってた領域が再利用される。関数が終了する度に、</p>
+<ol type="1">
+<li>末尾アドレスに先頭アドレスをコピー</li>
+<li>待避しておいた前の関数の先頭アドレスを先頭アドレスにコピー</li>
+</ol>
+<p>で、関数呼び出しの前の状態にこの2つのアドレスは戻るわけだ。だから、関数呼び出しと終了の度にデータの書き込み位置は、スタック領域の中を進んだり、戻ったりする。これは確保と破棄が頻繁に行われるローカル変数のメモリ管理としてとても優れたやり方なんだ。</p>
+<p>このプログラムはmainからf1が2回呼び出されている。このプログラムは単純だから、1度目も2度目もまったく同じスタックフレームが作られる。だから、1度目のローカル変数のアドレスと2度目のローカル変数のアドレスは完全に一致している。つまり、メモリ領域は1度目使った場所が2度目の時に完全に再利用されているということだ。効率がいいね。</p>
+<p>さて、ここからちょっと怖い話だ。</p>
+<blockquote>
+<p>「え？ホラーですか。ジャンルとしては嫌いではないんですけど・・・」</p>
+</blockquote>
+<p>怖いぞー。思わず、ギャーと叫んでしまうようなコードが先ほどのプログラムには含まれている。</p>
+<blockquote>
+<p>「え？どこだろ？あ、『これはやってはいけない！』って書いてるところだ！」</p>
+</blockquote>
+<p>そうだ。何をしているかわかるかな？</p>
+<blockquote>
+<p>「えーっと、h1関数はintのポインタ型を返します。そして、返している値は・・・h1のローカル変数のアドレスですね」</p>
+</blockquote>
+<p>そうだね。そのアドレスはmain関数に戻ったときにはどうなっているだろうか。</p>
+<blockquote>
+<p>「戻った直後なら、データはまだあるんじゃないですか？ただ、その後に何か関数を呼び出していると・・・」</p>
+</blockquote>
+<p>その通り。まったく違う目的にもう再利用されてしまっているだろう。そのアドレスを頼りに読み取った値は確実に壊れている。なので、このコードは99%バグだ。しかもここに何かを書き込んだりしたら・・・</p>
+<blockquote>
+<p>「え、何が起こるんですか？まったく想像がつかないんですけど」</p>
+</blockquote>
+<p>私にもつかない。何が起こるか全くわからない。怖いな。</p>
+<blockquote>
+<p>「ホラーですね・・・」</p>
+</blockquote>
+<p>まあ、何にも起きないかも知れない。100万回に1回ぐらい何か起きるかも知れない。怖いな。</p>
+<blockquote>
+<p>「泣きそうです」</p>
+</blockquote>
+<p>もちろん、このコードは明らかにおかしいから、イマドキのコンパイラは警告してくれる。手元のコンパイラでコンパイルするとこんな警告が出た。</p>
+<pre><code>&gt; cc ch6_1.c
+ch6_1.c:72:11: warning: address of stack memory associated with local variable &#39;f1_i1&#39; returned [-Wreturn-stack-address]
+  return &amp;f1_i1;
+          ^~~~~
+1 warning generated.</code></pre>
+<p>「スタック領域の中のアドレスを返しちゃってますけど？」とあきれ顔だ。でも、警告なのでコンパイルは通る。C言語のこの手の警告は絶対に無視してはダメだ。</p>
+<h2 id="関数ポインタ">関数ポインタ</h2>
+<blockquote>
+<p>「さっきのスタック領域の図で疑問があるんですけど」</p>
+</blockquote>
+<p>なんだい？</p>
+<blockquote>
+<p>「関数を呼び出す度にローカル変数が確保されているのはわかるんですけど、その間のメモリ領域が結構ありますよね？さっきの図で、例えばf1_i2のアドレスの下4桁が0x7710でその上にあるf2_a1のアドレスが0x76ec。結構離れてません？」</p>
+</blockquote>
+<p>確かに。どのぐらい離れてる？</p>
+<blockquote>
+<p>「え？えーっと、0x7710から0x76ecを引くと・・・36byteかな」</p>
+</blockquote>
+<p>そこにf2_a1の自体も含まれてるから、int分引いて30byte。そんなに大きな領域ではないけど、もちろん重要な情報が書き込まれている。</p>
+<p>関数呼び出しをするときには、呼び出した関数から戻ってきたときのためにいくつかのデータをどこかに保持しておく必要がある。既に1つ説明しているけど、わかるかな？</p>
+<blockquote>
+<p>「うーん・・・今までの説明は非常にわかりやすかったですよ。疑問点は特にないですけど・・・」</p>
+</blockquote>
+<p>関数呼び出しの時に、「今のスタック領域の先頭をどこかに待避しておいて」と言わなかったかな？</p>
+<blockquote>
+<p>「ああ、そうか。今の関数がスタック領域のどこから使っているかの先頭アドレスは、関数呼び出しが戻ってきたらセットし直さなきゃいけないんでした」</p>
+</blockquote>
+<p>それがこの中に入ってる。</p>
+<blockquote>
+<p>「なるほどー。合理的ですね」</p>
+</blockquote>
+<p>もうひとつ、重要な情報がある。それは、リターンアドレスだ。</p>
+<p>リターンアドレスは、関数を呼び出した時にプログラムがどこまで進んでいたのかを示す値だ。当然だが、プログラム自体もメモリ上にある。だから、関数から戻ったらここからプログラムを再開してねという処理は、メモリのアドレスで指定することができる。というわけで、リターンアドレスもタダのポインタだ。</p>
+<blockquote>
+<p>「プログラムは、どの領域にあるんですか？データ領域？」</p>
+</blockquote>
+<p>コード領域だ。</p>
+<blockquote>
+<p>「まさかの新キャラでした」</p>
+</blockquote>
+<p>データ領域に近い、アドレス値の小さいところに置かれることが多い。半分正解だな。</p>
+<p>ちなみに、プログラムのある位置のアドレスも、C言語では簡単に扱える。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="dt">int</span> *start;</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="dt">int</span> f1(<span class="dt">int</span> f1_a1, <span class="dt">int</span> f1_a2);</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> **argv)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>{</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>  <span class="co">// ローカル変数</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>  <span class="dt">int</span> main_i1 = <span class="dv">1</span>;</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>  <span class="dt">int</span> main_i2 = <span class="dv">2</span>;</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>  <span class="co">// 関数のアドレスを取得して、関数ポインタに格納</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>  <span class="dt">int</span> (*main_ptr)() = main;</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>  <span class="dt">int</span> (*f1_ptr)() = f1;</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>  <span class="co">// ポインタに格納されているアドレスを表示</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>  printf(<span class="st">&quot;main ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, main_ptr);</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a>  printf(<span class="st">&quot;f1 ADDRESS: %p</span><span class="sc">\n</span><span class="st">&quot;</span>, f1_ptr);</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>  <span class="co">// メモリダンプの先頭位置は、main_i1のアドレスとする</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>  start = &amp;main_i1;</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a>  <span class="co">// ポインタを使って関数を呼び出す</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a>  (*f1_ptr)(<span class="dv">3</span>, <span class="dv">4</span>);</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a>}</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a><span class="dt">int</span> f1(<span class="dt">int</span> a1, <span class="dt">int</span> a2)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a>{</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true"></a>  <span class="dt">int</span> i1 = a2 + <span class="dv">1</span>;</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true"></a>  <span class="dt">int</span> i2 = i1 + <span class="dv">1</span>;</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a>  <span class="co">// f1は自分自身を何回か呼び出した後、メモリの値を書き出す。</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true"></a>  <span class="cf">if</span>(a1 &gt; <span class="dv">10</span>){</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true"></a>    <span class="dt">uint8_t</span> *p = start;</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true"></a>    <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; p-i &gt;= &amp;i2; i++)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true"></a>    {</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true"></a>      printf(<span class="st">&quot;[-%d] ADDRESS: %p VALUE: %x </span><span class="sc">\n</span><span class="st">&quot;</span>, i, p-i, *(p-i));</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true"></a>    }</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true"></a>  }<span class="cf">else</span>{</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true"></a>    f1(i2+<span class="dv">1</span>, i2+<span class="dv">2</span>);</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true"></a>  }</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true"></a>  <span class="cf">return</span> <span class="dv">255</span>;</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true"></a>}</span></code></pre></div>
+<p>配列と同じように、関数も関数名だけを書くとその関数があるメモリ領域のアドレスになる。関数ポインタの宣言は、書き方がややこしい。ただ、単にプログラムがある位置のアドレスなので、概念としては難しいものじゃ無いと思う。</p>
+<blockquote>
+<p>「何に使うのかはちょっとわからないですけど・・・」</p>
+</blockquote>
+<p>いろいろ使い道はあるよ。例えば、変数に格納できるのだから、配列も作れる。順番に呼び出して欲しい一連の関数を配列に入れてプログラムに渡したり出来る。</p>
+<p>そうだな・・・もっとわかりやすい例としてはデータとそれを扱う関数をセットにしたデータ構造を作ったりできるぞ。</p>
+<blockquote>
+<p>「それって、もしかしてオブジェクト指向っていいません？」</p>
+</blockquote>
+<p>そう。おそらくC言語で実装してあるオブジェクト指向言語は、内部はそういう仕組みのはずだ。</p>
+<p>さて、上のプログラムを実行すると、mainとf1のアドレスを表示した後、スタック領域をずらーっとダンプしていく。長いので実行例は省略するけど、自分でやってみてくれ。</p>
+<pre><code>main ADDRESS: 0x109d69e00
+f1 ADDRESS: 0x109d69e90
+[-0] ADDRESS: 0x7ffee5e9977c VALUE: 1 
+[-1] ADDRESS: 0x7ffee5e9977b VALUE: 0 
+[-2] ADDRESS: 0x7ffee5e9977a VALUE: 0 
+[-3] ADDRESS: 0x7ffee5e99779 VALUE: 0 
+[-4] ADDRESS: 0x7ffee5e99778 VALUE: 2 
+[-5] ADDRESS: 0x7ffee5e99777 VALUE: 0 
+[-6] ADDRESS: 0x7ffee5e99776 VALUE: 0 
+(以下略)</code></pre>
+<p>ローカル変数がどこに現れるかは前の図を見ながらなら見つけられると思う。その間の領域に、スタック領域を指すアドレスとコード領域を指すアドレスが見つけられるはずだ。後者がリターンアドレスだね。</p>
+<p>もちろん、関数の途中で次の関数の呼び出しをしているから、関数ポインタの値とリターンアドレスは一致しない。関数の先頭に戻ったら困るからね。</p>
+<p>さて、ここで文字列のところで触れたバッファオーバーランの話に戻る。</p>
+<blockquote>
+<p>「えっと、何でしたっけ」</p>
+</blockquote>
+<p>確保した領域より大きいデータをポインタめがけてコピーすると、確保した領域をはみ出してデータを書き込んでしまうことがあるという話をした。</p>
+<blockquote>
+<p>「はいはい、strcpyは怖い関数でした」</p>
+</blockquote>
+<p>もう一度、スタック領域を思い浮かべてみよう。そこにはローカル変数がある。そして連続した領域にリターンアドレスもある。ローカル変数めがけてデカいデータを書き込んでしまったが故に、リターンアドレスを書き換えてしまったらどうなる？</p>
+<p>そして、そのリターンアドレスが不正なコードを指していたら？</p>
+<blockquote>
+<p>「うう・・・」</p>
+</blockquote>
+<p>これがバッファオーバーランによるセキュリティインシデントの仕組みだ。 C言語ではプログラムもデータもすべてがメモリ上にあり、同じように扱える。これは大変に便利だし、C言語のパワーの源なんだけど、それ故にメモリを故意に書き換えられてしまえば何でも出来てしまう。そして、それを出来るだけの言語機能がCにはあるので、すごく気をつけていないと簡単にセキュリティホールができてしまう。</p>
+<blockquote>
+<p>「まさに、ハッカーのための言語という気がします」</p>
+</blockquote>
+<p>そうだね。</p>
 </div>
 <div class="note">
 </div>
