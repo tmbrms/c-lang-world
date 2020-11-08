@@ -578,7 +578,7 @@ ch6_1.c:72:11: warning: address of stack memory associated with local variable '
 
 >「え？えーっと、0x7710から0x76ecを引くと・・・36byteかな」
 
-そこにf2_a1の自体も含まれてるから、int分引いて30byte。
+そこにf2_a1の自体も含まれてるから、int分引いて32byte。
 そんなに大きな領域ではないけど、もちろん重要な情報が書き込まれている。
 
 関数呼び出しをするときには、呼び出した関数から戻ってきたときのために
