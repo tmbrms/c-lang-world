@@ -30,10 +30,11 @@
     * なぜローカル変数はFreeしなくてもいいのか
     * 関数呼び出しとは何か
     * 関数ポインタ
-* 次世代のC言語
+* [次世代のC言語](https://tmbrms.github.io/c-lang-world/7/next_generation.html)
     * C言語でプログラミングをすべきか(again)
     * C++
     * JVM
     * Rust
+    * C言語の現在
 
 
